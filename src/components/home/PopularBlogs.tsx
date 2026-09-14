@@ -42,7 +42,9 @@ export function PopularBlogs() {
           <AlignLeft color="#2E7D32" size={20} className="mr-2" />
           <Headline className="text-xl">Popular Blogs</Headline>
         </View>
-        <Label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Community Voices</Label>
+        <TouchableOpacity onPress={() => router.push('/category/popular-blogs')} activeOpacity={0.7}>
+          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Community Voices {'>'}</Label>
+        </TouchableOpacity>
       </View>
 
       <ScrollView

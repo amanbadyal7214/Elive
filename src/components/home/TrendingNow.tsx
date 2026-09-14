@@ -63,7 +63,9 @@ export function TrendingNow() {
           <Flame color="#C9182B" size={20} className="mr-2" />
           <Headline className="text-xl font-bold">Trending Now</Headline>
         </View>
-        <Label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Editor's Pick</Label>
+        <TouchableOpacity onPress={() => router.push('/category/editors-pick')} activeOpacity={0.7}>
+          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Editor's Pick {'>'}</Label>
+        </TouchableOpacity>
       </View>
 
       <Animated.View style={{ opacity: fadeAnim }} className="w-full">

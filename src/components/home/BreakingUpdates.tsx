@@ -34,7 +34,9 @@ export function BreakingUpdates() {
           <View className="w-2 h-2 rounded-full bg-primary mr-2" />
           <Headline className="text-lg">Breaking Updates</Headline>
         </View>
-        <Label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Live Desk</Label>
+        <TouchableOpacity onPress={() => router.push('/category/live-desk')} activeOpacity={0.7}>
+          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Live Desk {'>'}</Label>
+        </TouchableOpacity>
       </View>
 
       <ScrollView

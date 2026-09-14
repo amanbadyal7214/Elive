@@ -26,11 +26,9 @@ export function CategoryFilters() {
           <TouchableOpacity
             key={cat}
             onPress={() => {
-              if (cat === 'ALL') {
-                setActive('ALL');
-              } else {
-                router.push(`/category/${cat.toLowerCase().replace(/ /g, '-')}`);
-              }
+              const slug = cat === 'ALL' ? 'all' : cat.toLowerCase().replace(/\s+/g, '-');
+              setActive(cat);
+              router.push(`/category/${slug}`);
             }}
             className={cn(
               'px-4 py-2 rounded-full flex-row items-center',

@@ -1,8 +1,3 @@
-import "../../global.css";
-import { Stack } from "expo-router";
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
 import {
   Newsreader_400Regular,
   Newsreader_500Medium,
@@ -15,6 +10,11 @@ import {
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
+import { useFonts } from 'expo-font';
+import { Stack } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import "../../global.css";
 
 SplashScreen.preventAutoHideAsync();
 

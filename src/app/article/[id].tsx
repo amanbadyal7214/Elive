@@ -9,9 +9,114 @@ import { Avatar } from '../../components/ui/Avatar';
 
 import { Header } from '../../components/home/Header';
 
+interface ArticleData {
+  id: string | number;
+  category: string;
+  badgeVariant: 'blue' | 'red' | 'green' | 'pink' | 'primary';
+  title: string;
+  subtitle: string;
+  author: string;
+  authorRole: string;
+  authorAvatar: string;
+  date: string;
+  readTime: string;
+  views: string;
+  image: string;
+}
+
+const ARTICLES_MAP: Record<string, ArticleData> = {
+  '1': {
+    id: 1,
+    category: 'CURRENT AFFAIRS',
+    badgeVariant: 'red',
+    title: 'Global Climate Summit Finalizes Landmark Clean Grid Framework',
+    subtitle: 'Ministers from 45 nations commit to unified cross-border renewable grid protocols and storage guarantees.',
+    author: 'Sarah Jenkins',
+    authorRole: 'Senior Environmental Correspondent',
+    authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    date: 'May 20, 2025',
+    readTime: '4 min read',
+    views: '28.4k views',
+    image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800&q=80',
+  },
+  '2': {
+    id: 2,
+    category: 'CAREER & SKILLS',
+    badgeVariant: 'blue',
+    title: 'Next-Gen AI Protocols Rewrite the Rules for Modern Tech Teams',
+    subtitle: 'Engineering leads migrate toward localized model inference to eliminate latency and preserve enterprise IP.',
+    author: 'Devon Vance',
+    authorRole: 'Principal Tech Architect',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    date: 'May 19, 2025',
+    readTime: '6 min read',
+    views: '34.1k views',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80',
+  },
+  '105': {
+    id: 105,
+    category: 'CAREER & SKILLS',
+    badgeVariant: 'blue',
+    title: 'The Architecture of Asynchronous Decision-Making',
+    subtitle: 'When teams replace live sync meetings with high-clarity written proposals, execution velocity doubles.',
+    author: 'Marcus Vance',
+    authorRole: 'VP of Engineering Strategy',
+    authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+    date: 'May 18, 2025',
+    readTime: '6 min read',
+    views: '52.9k views',
+    image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&q=80',
+  },
+  '106': {
+    id: 106,
+    category: 'CURRENT AFFAIRS',
+    badgeVariant: 'red',
+    title: 'Decarbonizing High Seas: How Marine Wind Kites Are Scaling',
+    subtitle: 'Commercial cargo vessels deploy automated high-altitude wind kites to slash bunker fuel usage.',
+    author: 'Elena Rostova',
+    authorRole: 'Maritime Climate Journalist',
+    authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
+    date: 'May 16, 2025',
+    readTime: '5 min read',
+    views: '19.3k views',
+    image: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=800&q=80',
+  },
+  '107': {
+    id: 107,
+    category: 'ENTERTAINMENT',
+    badgeVariant: 'green',
+    title: 'Silence as Counter-Culture: Reclaiming Sacred Solitude in Tech',
+    subtitle: 'In an era of hyper-connected notifications, deliberate silence becomes the ultimate cognitive superpower.',
+    author: 'Julian Chen',
+    authorRole: 'Culture & Philosophy Fellow',
+    authorAvatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150',
+    date: 'May 15, 2025',
+    readTime: '8 min read',
+    views: '61.2k views',
+    image: 'https://images.unsplash.com/photo-1444464666168-49b626428bc5?w=800&q=80',
+  },
+};
+
+const DEFAULT_ARTICLE: ArticleData = {
+  id: 'default',
+  category: 'CAREER & SKILLS',
+  badgeVariant: 'blue',
+  title: 'The Cognitive Architecture of Deep Work in an Era of Generative AI',
+  subtitle: 'When machines produce instant answers, human intellect shifts from retrieval to orchestration. Here is how leading thinkers insulate attention.',
+  author: 'Elena Vance',
+  authorRole: 'Senior Tech & Culture Editor',
+  authorAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
+  date: 'May 14, 2025',
+  readTime: '12 min read',
+  views: '41.8k views',
+  image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80',
+};
+
 export default function ArticleDetails() {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  const article = (id && ARTICLES_MAP[id.toString()]) ? ARTICLES_MAP[id.toString()] : DEFAULT_ARTICLE;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -19,47 +124,56 @@ export default function ArticleDetails() {
 
       <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
         {/* Meta Info */}
-        <View className="px-4 pt-6 pb-2">
+        <View className="px-4 pt-4 pb-2">
+          {/* Top Bar Back Button */}
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            className="flex-row items-center mb-4 self-start bg-gray-100 px-3 py-1.5 rounded-full"
+          >
+            <ArrowLeft size={16} color="#4B5563" className="mr-1.5" />
+            <Label className="text-xs font-bold text-gray-700">Back</Label>
+          </TouchableOpacity>
+
           <View className="flex-row items-center justify-between mb-4">
-            <Badge label="CAREER & SKILLS" variant="blue" className="rounded-md px-3 py-1" />
+            <Badge label={article.category} variant={article.badgeVariant as any} className="rounded-md px-3 py-1" />
             <View className="flex-row items-center">
               <View className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2" />
-              <Label className="text-xs text-gray-500 tracking-wider">Smartphone Analysis</Label>
+              <Label className="text-xs text-gray-500 tracking-wider">Verified Article</Label>
             </View>
           </View>
 
           <View className="flex-row items-center mb-4">
-            <Label className="text-xs text-gray-500">May 14, 2024</Label>
+            <Label className="text-xs text-gray-500">{article.date}</Label>
             <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
             <Clock size={12} color="#6B7280" className="mr-1" />
-            <Label className="text-xs text-gray-500">12 min read</Label>
+            <Label className="text-xs text-gray-500">{article.readTime}</Label>
             <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
             <Eye size={12} color="#6B7280" className="mr-1" />
-            <Label className="text-xs text-gray-500">41.8k views</Label>
+            <Label className="text-xs text-gray-500">{article.views}</Label>
           </View>
 
           {/* Headline */}
-          <Headline className="text-4xl leading-[1.2] mb-4">
-            The Cognitive Architecture of Deep Work in an Era of Generative AI
+          <Headline className="text-3xl leading-[1.25] mb-4">
+            {article.title}
           </Headline>
 
           {/* Subtitle / Lead */}
-          <Label className="text-[17px] text-gray-600 leading-relaxed mb-6 font-serif">
-            When machines produce instant answers, human intellect shifts from retrieval to orchestration. Here is how leading thinkers are insulating their attention spans.
+          <Label className="text-[16px] text-gray-600 leading-relaxed mb-6 font-serif">
+            {article.subtitle}
           </Label>
 
           {/* Author Row */}
           <View className="flex-row items-center justify-between py-4 border-t border-b border-gray-100">
             <View className="flex-row items-center flex-1">
-              <Avatar src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" size={44} className="mr-3" />
+              <Avatar src={article.authorAvatar} size={44} className="mr-3" />
               <View>
                 <View className="flex-row items-center">
-                  <Headline className="text-base mr-1">Elena Vance</Headline>
+                  <Headline className="text-base mr-1">{article.author}</Headline>
                   <View className="bg-red-100 rounded-full w-4 h-4 items-center justify-center">
-                    <Label className="text-[10px] text-primary">C</Label>
+                    <Label className="text-[10px] text-primary">✓</Label>
                   </View>
                 </View>
-                <Label className="text-xs text-gray-500">Senior Tech & Culture Editor</Label>
+                <Label className="text-xs text-gray-500">{article.authorRole}</Label>
               </View>
             </View>
             <TouchableOpacity className="bg-[#8B0000] px-4 py-1.5 rounded-full">
