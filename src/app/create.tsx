@@ -99,28 +99,28 @@ export default function CreateArticleScreen() {
       <View className="bg-[#F8F9FA] px-4 py-3 border-b border-gray-100">
         <View className="flex-row items-center justify-between mb-2">
           <TouchableOpacity onPress={() => setCurrentStep(1)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 1 ? 'bg-[#980000]' : 'bg-gray-200'}`}>
+            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 1 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
               <Label className={`text-xs font-bold ${currentStep >= 1 ? 'text-white' : 'text-gray-600'}`}>1</Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 1 ? 'text-[#980000]' : 'text-gray-500'}`}>Details</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 1 ? 'text-[#002249]' : 'text-gray-500'}`}>Details</Label>
           </TouchableOpacity>
 
-          <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 2 ? 'bg-[#980000]' : 'bg-gray-200'}`} />
+          <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'}`} />
 
           <TouchableOpacity onPress={() => setCurrentStep(2)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 2 ? 'bg-[#980000]' : 'bg-gray-200'}`}>
+            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
               <Label className={`text-xs font-bold ${currentStep >= 2 ? 'text-white' : 'text-gray-600'}`}>2</Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 2 ? 'text-[#980000]' : 'text-gray-500'}`}>Write</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 2 ? 'text-[#002249]' : 'text-gray-500'}`}>Write</Label>
           </TouchableOpacity>
 
-          <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 3 ? 'bg-[#980000]' : 'bg-gray-200'}`} />
+          <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 3 ? 'bg-[#002249]' : 'bg-gray-200'}`} />
 
           <TouchableOpacity onPress={() => setCurrentStep(3)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep === 3 ? 'bg-[#980000]' : 'bg-gray-200'}`}>
+            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep === 3 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
               <Label className={`text-xs font-bold ${currentStep === 3 ? 'text-white' : 'text-gray-600'}`}>3</Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 3 ? 'text-[#980000]' : 'text-gray-500'}`}>Preview</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 3 ? 'text-[#002249]' : 'text-gray-500'}`}>Preview</Label>
           </TouchableOpacity>
         </View>
       </View>
@@ -139,7 +139,7 @@ export default function CreateArticleScreen() {
         {currentStep < 3 ? (
           <TouchableOpacity
             onPress={() => setCurrentStep((currentStep + 1) as any)}
-            className="bg-[#980000] flex-row items-center px-4 py-2 rounded-full shadow-sm"
+            className="bg-[#002249] flex-row items-center px-4 py-2 rounded-full shadow-sm"
             activeOpacity={0.9}
           >
             <Label className="text-white font-bold text-xs mr-1">
@@ -150,7 +150,7 @@ export default function CreateArticleScreen() {
         ) : (
           <TouchableOpacity
             onPress={handlePublish}
-            className="bg-[#980000] flex-row items-center px-4 py-2 rounded-full shadow-sm"
+            className="bg-[#002249] flex-row items-center px-4 py-2 rounded-full shadow-sm"
             activeOpacity={0.9}
           >
             <Label className="text-white font-bold text-xs mr-1">
@@ -196,7 +196,7 @@ export default function CreateArticleScreen() {
               {/* Title Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Story Title</Label>
               <TextInput
-                className="text-2xl font-serif font-bold text-[#980000] mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100"
+                className="text-2xl font-serif font-bold text-[#002249] mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100"
                 placeholder="Title of your story or analysis..."
                 placeholderTextColor="#9CA3AF"
                 value={title}
@@ -261,8 +261,8 @@ export default function CreateArticleScreen() {
                         key={tag}
                         onPress={() => toggleTag(tag)}
                         className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${isSelected
-                            ? 'bg-[#3B4A6B] border-[#3B4A6B]'
-                            : 'bg-white border-gray-200'
+                          ? 'bg-[#3B4A6B] border-[#3B4A6B]'
+                          : 'bg-white border-gray-200'
                           }`}
                       >
                         <Label className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-700'}`}>
@@ -282,7 +282,7 @@ export default function CreateArticleScreen() {
               {/* Step 1 Next Button */}
               <TouchableOpacity
                 onPress={() => setCurrentStep(2)}
-                className="bg-[#980000] py-4 rounded-xl items-center justify-center flex-row shadow-sm mb-6"
+                className="bg-[#002249] py-4 rounded-xl items-center justify-center flex-row shadow-sm mb-6"
               >
                 <Label className="text-white font-bold text-base mr-2">Continue to Story Editor</Label>
                 <ArrowRight color="white" size={18} />
@@ -330,7 +330,7 @@ export default function CreateArticleScreen() {
 
                 <TouchableOpacity
                   onPress={() => setCurrentStep(3)}
-                  className="flex-1 bg-[#980000] py-3.5 rounded-xl items-center justify-center flex-row"
+                  className="flex-1 bg-[#002249] py-3.5 rounded-xl items-center justify-center flex-row"
                 >
                   <Label className="text-white font-bold text-sm mr-1">Preview Article</Label>
                   <Eye color="white" size={16} />
@@ -392,7 +392,7 @@ export default function CreateArticleScreen() {
 
                 <TouchableOpacity
                   onPress={handlePublish}
-                  className="flex-1 bg-[#980000] py-4 rounded-xl items-center justify-center flex-row shadow-md"
+                  className="flex-1 bg-[#002249] py-4 rounded-xl items-center justify-center flex-row shadow-md"
                 >
                   <Label className="text-white font-bold text-base mr-2">
                     {isPublished ? 'Published! ✓' : 'Publish Story'}

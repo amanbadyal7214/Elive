@@ -125,7 +125,7 @@ export default function ProfileScreen() {
                   <TouchableOpacity className="bg-gray-100 p-2.5 rounded-full border border-gray-200">
                     <SlidersHorizontal color="#4B5563" size={18} />
                   </TouchableOpacity>
-                  <TouchableOpacity className="bg-[#980000] flex-row items-center px-4 py-2.5 rounded-full shadow-sm" activeOpacity={0.9}>
+                  <TouchableOpacity className="bg-[#002249] flex-row items-center px-4 py-2.5 rounded-full shadow-sm" activeOpacity={0.9}>
                     <Edit3 color="white" size={14} className="mr-1.5" />
                     <Label className="text-white font-bold text-xs">Edit Profile</Label>
                   </TouchableOpacity>
@@ -135,7 +135,7 @@ export default function ProfileScreen() {
               {/* Name & Bio */}
               <Headline className="text-2xl font-serif text-gray-900 mb-0.5">Elena Vance</Headline>
               <Label className="text-xs font-mono text-gray-500 mb-1">@elenavance</Label>
-              <Label className="text-xs font-bold text-[#980000] mb-3">Senior Tech Editor & Writer</Label>
+              <Label className="text-xs font-bold text-[#002249] mb-3">Senior Tech Editor & Writer</Label>
 
               <Body className="text-xs text-gray-600 leading-relaxed font-serif mb-6">
                 Writing about emerging technology, workplace anthropology, and cognitive depth. Fellow at Institute for Digital Ecology.
@@ -173,11 +173,11 @@ export default function ProfileScreen() {
                 onPress={() => setActiveProfileTab('articles')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'articles' ? 'bg-white shadow-sm' : ''}`}
               >
-                <Label className={`font-bold text-xs ${activeProfileTab === 'articles' ? 'text-[#980000]' : 'text-gray-600'}`}>
+                <Label className={`font-bold text-xs ${activeProfileTab === 'articles' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   My Articles
                 </Label>
                 <View className={`ml-1.5 px-1.5 py-0.2 rounded-full ${activeProfileTab === 'articles' ? 'bg-red-100' : 'bg-gray-300'}`}>
-                  <Label className={`text-[9px] font-bold ${activeProfileTab === 'articles' ? 'text-[#980000]' : 'text-gray-700'}`}>18</Label>
+                  <Label className={`text-[9px] font-bold ${activeProfileTab === 'articles' ? 'text-[#002249]' : 'text-gray-700'}`}>18</Label>
                 </View>
               </TouchableOpacity>
 
@@ -185,7 +185,7 @@ export default function ProfileScreen() {
                 onPress={() => setActiveProfileTab('saved')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'saved' ? 'bg-white shadow-sm' : ''}`}
               >
-                <Label className={`font-bold text-xs ${activeProfileTab === 'saved' ? 'text-[#980000]' : 'text-gray-600'}`}>
+                <Label className={`font-bold text-xs ${activeProfileTab === 'saved' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   Saved
                 </Label>
                 <View className="ml-1.5 px-1.5 py-0.2 rounded-full bg-gray-300">
@@ -197,7 +197,7 @@ export default function ProfileScreen() {
                 onPress={() => setActiveProfileTab('responses')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'responses' ? 'bg-white shadow-sm' : ''}`}
               >
-                <Label className={`font-bold text-xs ${activeProfileTab === 'responses' ? 'text-[#980000]' : 'text-gray-600'}`}>
+                <Label className={`font-bold text-xs ${activeProfileTab === 'responses' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   Responses
                 </Label>
                 <View className="ml-1.5 px-1.5 py-0.2 rounded-full bg-gray-300">
@@ -305,7 +305,7 @@ export default function ProfileScreen() {
                 />
               </View>
 
-              <TouchableOpacity className="bg-[#980000] flex-row items-center justify-center rounded-full py-3.5 shadow-sm" activeOpacity={0.9}>
+              <TouchableOpacity className="bg-[#002249] flex-row items-center justify-center rounded-full py-3.5 shadow-sm" activeOpacity={0.9}>
                 <Label className="text-white font-bold text-xs mr-2">Subscribe to Elena's Dispatch</Label>
                 <ArrowRight color="white" size={16} />
               </TouchableOpacity>
@@ -427,13 +427,13 @@ export default function ProfileScreen() {
                     onPress={() => setRememberMe(!rememberMe)}
                     activeOpacity={0.8}
                   >
-                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${rememberMe ? 'bg-[#980000] border-[#980000]' : 'bg-white border-gray-300'}`}>
+                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${rememberMe ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
                       {rememberMe && <Check size={12} color="white" />}
                     </View>
                     <Label className="text-sm text-gray-600">Remember me</Label>
                   </TouchableOpacity>
                   <TouchableOpacity>
-                    <Label className="text-sm font-bold text-[#980000]">Forgot password?</Label>
+                    <Label className="text-sm font-bold text-[#002249]">Forgot password?</Label>
                   </TouchableOpacity>
                 </View>
               ) : (
@@ -443,7 +443,7 @@ export default function ProfileScreen() {
                     onPress={() => setTermsAgreed(!termsAgreed)}
                     activeOpacity={0.8}
                   >
-                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${termsAgreed ? 'bg-[#980000] border-[#980000]' : 'bg-white border-gray-300'}`}>
+                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${termsAgreed ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
                       {termsAgreed && <Check size={12} color="white" />}
                     </View>
                     <Label className="text-sm text-gray-600">I agree to Terms & Privacy Policy</Label>
@@ -453,7 +453,7 @@ export default function ProfileScreen() {
 
               <TouchableOpacity
                 onPress={() => setIsLoggedIn(true)}
-                className="bg-[#980000] flex-row items-center justify-center rounded-xl py-4 mb-6"
+                className="bg-[#002249] flex-row items-center justify-center rounded-xl py-4 mb-6"
                 activeOpacity={0.9}
               >
                 <Label className="text-white font-bold text-base mr-2">
@@ -489,7 +489,7 @@ export default function ProfileScreen() {
                 {activeTab === 'signIn' ? "Don't have an account yet?" : "Already have an account?"}
               </Label>
               <TouchableOpacity onPress={() => setActiveTab(activeTab === 'signIn' ? 'create' : 'signIn')}>
-                <Label className="text-sm font-bold text-[#980000]">
+                <Label className="text-sm font-bold text-[#002249]">
                   {activeTab === 'signIn' ? 'Register now' : 'Sign In'}
                 </Label>
               </TouchableOpacity>
