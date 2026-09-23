@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Filter, Layers, Search, X } from 'lucide-react-native';
 import { useState } from 'react';
 import { Image, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
@@ -98,6 +98,7 @@ const editorsPicks = [
 ];
 
 export default function ExploreScreen() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSubCategory, setSelectedSubCategory] = useState('All');
@@ -164,10 +165,13 @@ export default function ExploreScreen() {
                   key={filter.id}
                   onPress={() => handleCategoryPress(filter.id)}
                   className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border ${isSelected
-                      ? 'border-transparent shadow-sm'
+                      ? 'border-transparent'
                       : 'bg-gray-50 border-gray-200'
                     }`}
-                  style={{ backgroundColor: isSelected ? filter.bg : '#F9FAFB' }}
+                  style={{
+                    backgroundColor: isSelected ? filter.bg : '#F9FAFB',
+                    ...(isSelected ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 1 } : {})
+                  }}
                 >
                   {!isSelected && filter.id !== 'all' && (
                     <View className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: filter.color }} />
@@ -197,8 +201,9 @@ export default function ExploreScreen() {
                     <TouchableOpacity
                       key={index}
                       onPress={() => setSelectedSubCategory(sub)}
+                      style={isSubActive ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 1 } : undefined}
                       className={`px-3.5 py-1.5 rounded-xl mr-2 flex-row items-center border ${isSubActive
-                          ? 'bg-gray-900 border-gray-900 shadow-sm'
+                          ? 'bg-gray-900 border-gray-900'
                           : 'bg-gray-50 border-gray-200'
                         }`}
                     >

@@ -320,13 +320,15 @@ export default function CategoryDetails() {
             <View className="flex-row bg-gray-50 p-1 rounded-xl border border-gray-100">
               <TouchableOpacity
                 onPress={() => setActiveSort('Latest')}
-                className={`px-4 py-1.5 rounded-lg ${activeSort === 'Latest' ? 'bg-white shadow-sm' : ''}`}
+                style={activeSort === 'Latest' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 } : undefined}
+                className={`px-4 py-1.5 rounded-lg ${activeSort === 'Latest' ? 'bg-white' : ''}`}
               >
                 <Label className={`text-xs font-bold ${activeSort === 'Latest' ? 'text-gray-900' : 'text-gray-500'}`}>Latest</Label>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setActiveSort('Most Read')}
-                className={`px-4 py-1.5 rounded-lg ${activeSort === 'Most Read' ? 'bg-white shadow-sm' : ''}`}
+                style={activeSort === 'Most Read' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 } : undefined}
+                className={`px-4 py-1.5 rounded-lg ${activeSort === 'Most Read' ? 'bg-white' : ''}`}
               >
                 <Label className={`text-xs font-bold ${activeSort === 'Most Read' ? 'text-gray-900' : 'text-gray-500'}`}>Most Read</Label>
               </TouchableOpacity>

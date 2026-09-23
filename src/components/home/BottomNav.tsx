@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { router, usePathname } from 'expo-router';
-import { Home, Grid, Edit3, Bookmark, User } from 'lucide-react-native';
+import { usePathname, useRouter } from 'expo-router';
+import { Bookmark, Edit3, Grid, Home, User } from 'lucide-react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Label } from '../ui/Typography';
 
 export function BottomNav() {
+  const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
@@ -14,11 +14,11 @@ export function BottomNav() {
   const isProfile = pathname === '/profile';
 
   return (
-    <View 
-      className="flex-row items-center justify-around bg-white pt-2 border-t border-gray-100 px-2" 
+    <View
+      className="flex-row items-center justify-around bg-white pt-2 border-t border-gray-100 px-2"
       style={[styles.shadow, { paddingBottom: insets.bottom > 0 ? insets.bottom : 16 }]}
     >
-      
+
       <TouchableOpacity onPress={() => router.push('/')} className="items-center py-2 flex-1">
         <Home color={isHome ? '#002249' : '#9CA3AF'} size={24} />
         <Label className={`text-[10px] mt-1 font-bold ${isHome ? 'text-primary' : 'text-gray-400'}`}>Home</Label>
@@ -31,7 +31,7 @@ export function BottomNav() {
 
       {/* Center Action Button */}
       <View className="flex-1 items-center justify-center">
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => router.push('/create')}
           activeOpacity={0.9}
           className="bg-primary w-12 h-12 rounded-full items-center justify-center -mt-8 border-4 border-white shadow-md"

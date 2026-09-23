@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import {
   ArrowRight,
   ArrowUpDown,
@@ -9,22 +9,25 @@ import {
   Eye,
   EyeOff,
   Heart,
+  KeyRound,
   Lock,
   LogOut,
   MessageSquare,
   MoreHorizontal,
+  RefreshCw,
   Search,
   SlidersHorizontal,
   Sun,
-  User
+  User as UserIcon
 } from 'lucide-react-native';
-import { useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { Body, Headline, Label } from '../components/ui/Typography';
+import useAuth, { User } from '../hooks/useAuth';
 
 const articles = [
   {
@@ -66,17 +69,119 @@ const articles = [
 ];
 
 export default function ProfileScreen() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const router = useRouter();
+  const { login, register, verifyOtp, resendVerification, loading, error, clearError } = useAuth();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   const [activeTab, setActiveTab] = useState<'signIn' | 'create'>('signIn');
+  const [showOtpView, setShowOtpView] = useState(false);
   const [activeProfileTab, setActiveProfileTab] = useState<'articles' | 'saved' | 'responses'>('articles');
+  
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [termsAgreed, setTermsAgreed] = useState(true);
+
+  // Form Fields State
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
   const [dispatchEmail, setDispatchEmail] = useState('');
+  const [localMessage, setLocalMessage] = useState<string | null>(null);
 
+  // 1. Sign In Handler
+  const handleSignIn = async () => {
+    setLocalMessage(null);
+    if (!email.trim() || !password.trim()) {
+      setLocalMessage('Please enter both email and password.');
+      return;
+    }
+
+    try {
+      const res = await login({ email: email.trim(), password: password.trim() });
+      if (res.user) {
+        setCurrentUser(res.user);
+        setIsLoggedIn(true);
+      }
+    } catch (err: any) {
+      // Error handled by useAuth
+    }
+  };
+
+  // 2. Register Handler
+  const handleRegister = async () => {
+    setLocalMessage(null);
+    if (!fullName.trim() || !email.trim() || !password.trim()) {
+      setLocalMessage('Please fill in all required fields.');
+      return;
+    }
+    if (!termsAgreed) {
+      setLocalMessage('Please agree to the Terms & Privacy Policy.');
+      return;
+    }
+
+    try {
+      const res = await register({
+        full_name: fullName.trim(),
+        email: email.trim(),
+        password: password.trim(),
+      });
+      if (res.verification_required || res.success) {
+        setShowOtpView(true);
+      }
+    } catch (err: any) {
+      // Error handled by useAuth
+    }
+  };
+
+  // 3. Verify OTP Handler
+  const handleVerifyOtp = async () => {
+    setLocalMessage(null);
+    if (!otp.trim()) {
+      setLocalMessage('Please enter the verification OTP.');
+      return;
+    }
+
+    try {
+      const res = await verifyOtp({
+        email: email.trim(),
+        otp: otp.trim(),
+      });
+      if (res.user) {
+        setCurrentUser(res.user);
+        setIsLoggedIn(true);
+        setShowOtpView(false);
+      }
+    } catch (err: any) {
+      // Error handled by useAuth
+    }
+  };
+
+  // 4. Resend OTP Handler
+  const handleResendOtp = async () => {
+    setLocalMessage(null);
+    try {
+      const res = await resendVerification({ email: email.trim() });
+      setLocalMessage(res.message || 'Verification code resent successfully.');
+    } catch (err: any) {
+      // Error handled by useAuth
+    }
+  };
+
+  // Logout Handler
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+    setShowOtpView(false);
+    setOtp('');
+    setPassword('');
+    clearError();
+    setLocalMessage(null);
+  };
+
+  // Logged-in Profile View
   if (isLoggedIn) {
     return (
       <SafeAreaView className="flex-1 bg-[#F8F9FA]" edges={['top']}>
@@ -100,7 +205,7 @@ export default function ProfileScreen() {
             <TouchableOpacity>
               <Sun color="#121417" size={20} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsLoggedIn(false)}>
+            <TouchableOpacity onPress={handleLogout}>
               <LogOut color="#6B7280" size={20} />
             </TouchableOpacity>
           </View>
@@ -115,7 +220,7 @@ export default function ProfileScreen() {
               {/* Avatar & Actions Row */}
               <View className="flex-row justify-between items-start mb-4">
                 <View className="relative">
-                  <Avatar src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300" size={80} className="border-2 border-white shadow-md" />
+                  <Avatar src={currentUser?.image || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300"} size={80} className="border-2 border-white shadow-md" />
                   <View className="absolute bottom-0 right-0 bg-primary rounded-full p-0.5 border-2 border-white">
                     <CheckCircle2 color="white" size={14} />
                   </View>
@@ -133,12 +238,18 @@ export default function ProfileScreen() {
               </View>
 
               {/* Name & Bio */}
-              <Headline className="text-2xl font-serif text-gray-900 mb-0.5">Elena Vance</Headline>
-              <Label className="text-xs font-mono text-gray-500 mb-1">@elenavance</Label>
-              <Label className="text-xs font-bold text-[#002249] mb-3">Senior Tech Editor & Writer</Label>
+              <Headline className="text-2xl font-serif text-gray-900 mb-0.5">
+                {currentUser?.full_name || 'Elena Vance'}
+              </Headline>
+              <Label className="text-xs font-mono text-gray-500 mb-1">
+                {currentUser?.email ? `@${currentUser.email.split('@')[0]}` : '@elenavance'}
+              </Label>
+              <Label className="text-xs font-bold text-[#002249] mb-3">
+                {currentUser?.is_admin ? 'Admin User' : 'Verified Member'}
+              </Label>
 
               <Body className="text-xs text-gray-600 leading-relaxed font-serif mb-6">
-                Writing about emerging technology, workplace anthropology, and cognitive depth. Fellow at Institute for Digital Ecology.
+                Welcome to eLiveToday! Reading & engaging with technology, lifestyle, and modern culture stories.
               </Body>
 
               {/* Stats Row */}
@@ -171,7 +282,8 @@ export default function ProfileScreen() {
             <View className="flex-row bg-gray-200/80 rounded-2xl p-1">
               <TouchableOpacity
                 onPress={() => setActiveProfileTab('articles')}
-                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'articles' ? 'bg-white shadow-sm' : ''}`}
+                style={activeProfileTab === 'articles' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 } : undefined}
+                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'articles' ? 'bg-white' : ''}`}
               >
                 <Label className={`font-bold text-xs ${activeProfileTab === 'articles' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   My Articles
@@ -183,7 +295,8 @@ export default function ProfileScreen() {
 
               <TouchableOpacity
                 onPress={() => setActiveProfileTab('saved')}
-                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'saved' ? 'bg-white shadow-sm' : ''}`}
+                style={activeProfileTab === 'saved' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 } : undefined}
+                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'saved' ? 'bg-white' : ''}`}
               >
                 <Label className={`font-bold text-xs ${activeProfileTab === 'saved' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   Saved
@@ -195,7 +308,8 @@ export default function ProfileScreen() {
 
               <TouchableOpacity
                 onPress={() => setActiveProfileTab('responses')}
-                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'responses' ? 'bg-white shadow-sm' : ''}`}
+                style={activeProfileTab === 'responses' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 } : undefined}
+                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'responses' ? 'bg-white' : ''}`}
               >
                 <Label className={`font-bold text-xs ${activeProfileTab === 'responses' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   Responses
@@ -291,7 +405,7 @@ export default function ProfileScreen() {
               </Headline>
 
               <Label className="text-xs text-gray-600 font-serif leading-relaxed mb-4">
-                Elena's personal breakdown of technology ethics, workplace trends, and recommended long-reads, delivered every Sunday morning.
+                Personal breakdown of technology ethics, workplace trends, and recommended long-reads, delivered every Sunday morning.
               </Label>
 
               <View className="bg-white rounded-full flex-row items-center px-4 py-3 border border-gray-200 mb-3">
@@ -306,7 +420,7 @@ export default function ProfileScreen() {
               </View>
 
               <TouchableOpacity className="bg-[#002249] flex-row items-center justify-center rounded-full py-3.5 shadow-sm" activeOpacity={0.9}>
-                <Label className="text-white font-bold text-xs mr-2">Subscribe to Elena's Dispatch</Label>
+                <Label className="text-white font-bold text-xs mr-2">Subscribe to eLive Dispatch</Label>
                 <ArrowRight color="white" size={16} />
               </TouchableOpacity>
             </View>
@@ -322,7 +436,7 @@ export default function ProfileScreen() {
     );
   }
 
-  // Fallback: Login / Auth View when isLoggedIn === false
+  // Auth View (Shown when isLoggedIn === false)
   return (
     <SafeAreaView className="flex-1 bg-[#F8F9FA]" edges={['top']}>
       <KeyboardAvoidingView
@@ -331,153 +445,235 @@ export default function ProfileScreen() {
       >
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
 
-          {/* Hero Section */}
-          <View className="items-center px-6 pt-8 pb-6">
-            <View className="bg-gray-100 rounded-2xl p-4 mb-6">
+          {/* Hero Header */}
+          <View className="items-center px-6 pt-8 pb-4">
+            <View className="bg-gray-100 rounded-2xl p-4 mb-4">
               <Image
                 source={require('../../assets/images/elive_logo_1.png')}
                 style={{ width: 120, height: 30, resizeMode: 'contain' }}
               />
             </View>
-            <Headline className="text-3xl text-center font-serif text-gray-900 mb-3">
-              {activeTab === 'signIn' ? 'Welcome to eLiveToday' : 'Join eLiveToday'}
+            <Headline className="text-3xl text-center font-serif text-gray-900 mb-2">
+              {showOtpView
+                ? 'Verify Your Email'
+                : activeTab === 'signIn'
+                ? 'Welcome to eLiveToday'
+                : 'Join eLiveToday'}
             </Headline>
             <Label className="text-sm text-center text-gray-600 leading-relaxed px-4 font-serif">
-              {activeTab === 'signIn'
+              {showOtpView
+                ? `Enter the 6-digit verification code sent to ${email}`
+                : activeTab === 'signIn'
                 ? 'Sign in to access personalized feeds, save articles, and engage with the community.'
                 : 'Create a free account to personalize your feed, save stories, and join the discussion.'
               }
             </Label>
           </View>
 
-          {/* Auth Tabs */}
-          <View className="px-4 mb-6">
-            <View className="flex-row bg-gray-200 rounded-xl p-1">
-              <TouchableOpacity
-                onPress={() => setActiveTab('signIn')}
-                className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'signIn' ? 'bg-white shadow-sm' : ''}`}
-              >
-                <Label className={`font-bold text-sm ${activeTab === 'signIn' ? 'text-gray-900' : 'text-gray-500'}`}>Sign In</Label>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setActiveTab('create')}
-                className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'create' ? 'bg-white shadow-sm' : ''}`}
-              >
-                <Label className={`font-bold text-sm ${activeTab === 'create' ? 'text-gray-900' : 'text-gray-500'}`}>Create Account</Label>
-              </TouchableOpacity>
+          {/* Auth Navigation Tabs (Hidden when OTP view is active) */}
+          {!showOtpView && (
+            <View className="px-4 mb-4">
+              <View className="flex-row bg-gray-200 rounded-xl p-1">
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveTab('signIn');
+                    clearError();
+                    setLocalMessage(null);
+                  }}
+                  style={activeTab === 'signIn' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 } : undefined}
+                  className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'signIn' ? 'bg-white' : ''}`}
+                >
+                  <Label className={`font-bold text-sm ${activeTab === 'signIn' ? 'text-gray-900' : 'text-gray-500'}`}>Sign In</Label>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveTab('create');
+                    clearError();
+                    setLocalMessage(null);
+                  }}
+                  style={activeTab === 'create' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 } : undefined}
+                  className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'create' ? 'bg-white' : ''}`}
+                >
+                  <Label className={`font-bold text-sm ${activeTab === 'create' ? 'text-gray-900' : 'text-gray-500'}`}>Create Account</Label>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          )}
 
           {/* Form Card */}
           <View className="px-4 mb-6">
             <View className="bg-white rounded-3xl p-6 border border-gray-100" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 12 }}>
 
-              {activeTab === 'create' && (
+              {/* Error / Feedback Banner */}
+              {(error || localMessage) && (
+                <View className={`px-4 py-3 rounded-xl mb-4 ${error ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'}`}>
+                  <Label className={`text-xs ${error ? 'text-red-600 font-bold' : 'text-blue-700 font-medium'}`}>
+                    {error || localMessage}
+                  </Label>
+                </View>
+              )}
+
+              {/* View 1: OTP Verification Screen */}
+              {showOtpView ? (
                 <>
-                  <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Full Name</Label>
+                  <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Enter Verification OTP</Label>
                   <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                    <User size={18} color="#4B5563" className="mr-3" />
+                    <KeyRound size={18} color="#4B5563" className="mr-3" />
+                    <TextInput
+                      className="flex-1 text-sm text-gray-900 font-sans tracking-widest"
+                      placeholder="123456"
+                      placeholderTextColor="#9CA3AF"
+                      value={otp}
+                      onChangeText={setOtp}
+                      keyboardType="number-pad"
+                      maxLength={6}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={handleVerifyOtp}
+                    disabled={loading}
+                    className="bg-[#002249] flex-row items-center justify-center rounded-xl py-4 mb-4"
+                    activeOpacity={0.9}
+                  >
+                    {loading ? (
+                      <ActivityIndicator size="small" color="white" />
+                    ) : (
+                      <>
+                        <Label className="text-white font-bold text-base mr-2">Verify Email</Label>
+                        <ArrowRight size={18} color="white" />
+                      </>
+                    )}
+                  </TouchableOpacity>
+
+                  <View className="flex-row items-center justify-between mt-2">
+                    <TouchableOpacity onPress={handleResendOtp} disabled={loading} className="flex-row items-center">
+                      <RefreshCw size={14} color="#002249" className="mr-1.5" />
+                      <Label className="text-xs font-bold text-[#002249]">Resend Code</Label>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setShowOtpView(false)}>
+                      <Label className="text-xs text-gray-500 font-medium">Back to Form</Label>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                /* View 2: Sign In / Register Forms */
+                <>
+                  {activeTab === 'create' && (
+                    <>
+                      <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Full Name</Label>
+                      <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
+                        <UserIcon size={18} color="#4B5563" className="mr-3" />
+                        <TextInput
+                          className="flex-1 text-sm text-gray-900 font-sans"
+                          placeholder="Mohd Usman"
+                          placeholderTextColor="#9CA3AF"
+                          value={fullName}
+                          onChangeText={setFullName}
+                        />
+                      </View>
+                    </>
+                  )}
+
+                  <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
+                    {activeTab === 'signIn' ? 'Email Address' : 'Email Address'}
+                  </Label>
+                  <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
+                    <AtSign size={18} color="#4B5563" className="mr-3" />
                     <TextInput
                       className="flex-1 text-sm text-gray-900 font-sans"
-                      placeholder="John Doe"
+                      placeholder="usman@example.com"
                       placeholderTextColor="#9CA3AF"
-                      value={fullName}
-                      onChangeText={setFullName}
+                      value={email}
+                      onChangeText={setEmail}
+                      autoCapitalize="none"
+                      keyboardType="email-address"
                     />
+                  </View>
+
+                  <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Password</Label>
+                  <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
+                    <Lock size={18} color="#4B5563" className="mr-3" />
+                    <TextInput
+                      className="flex-1 text-sm text-gray-900 font-sans"
+                      placeholder="••••••••"
+                      placeholderTextColor="#9CA3AF"
+                      secureTextEntry={!showPassword}
+                      value={password}
+                      onChangeText={setPassword}
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="p-1">
+                      {showPassword ? <EyeOff size={18} color="#6B7280" /> : <Eye size={18} color="#6B7280" />}
+                    </TouchableOpacity>
+                  </View>
+
+                  {activeTab === 'signIn' ? (
+                    <View className="flex-row items-center justify-between mb-6">
+                      <TouchableOpacity
+                        className="flex-row items-center"
+                        onPress={() => setRememberMe(!rememberMe)}
+                        activeOpacity={0.8}
+                      >
+                        <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${rememberMe ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
+                          {rememberMe && <Check size={12} color="white" />}
+                        </View>
+                        <Label className="text-sm text-gray-600">Remember me</Label>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <Label className="text-sm font-bold text-[#002249]">Forgot password?</Label>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <View className="flex-row items-center mb-6">
+                      <TouchableOpacity
+                        className="flex-row items-center"
+                        onPress={() => setTermsAgreed(!termsAgreed)}
+                        activeOpacity={0.8}
+                      >
+                        <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${termsAgreed ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
+                          {termsAgreed && <Check size={12} color="white" />}
+                        </View>
+                        <Label className="text-sm text-gray-600">I agree to Terms & Privacy Policy</Label>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+
+                  <TouchableOpacity
+                    onPress={activeTab === 'signIn' ? handleSignIn : handleRegister}
+                    disabled={loading}
+                    className="bg-[#002249] flex-row items-center justify-center rounded-xl py-4 mb-6"
+                    activeOpacity={0.9}
+                  >
+                    {loading ? (
+                      <ActivityIndicator size="small" color="white" />
+                    ) : (
+                      <>
+                        <Label className="text-white font-bold text-base mr-2">
+                          {activeTab === 'signIn' ? 'Sign In to Account' : 'Create Account'}
+                        </Label>
+                        <ArrowRight size={18} color="white" />
+                      </>
+                    )}
+                  </TouchableOpacity>
+
+                  <View className="flex-row items-center justify-center mb-6">
+                    <View className="flex-1 h-px bg-gray-200" />
+                    <Label className="mx-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Or Continue With</Label>
+                    <View className="flex-1 h-px bg-gray-200" />
+                  </View>
+
+                  <View className="flex-row gap-3">
+                    <TouchableOpacity className="flex-1 flex-row items-center justify-center bg-gray-50 rounded-xl py-3.5 border border-gray-100">
+                      <View className="w-4 h-4 rounded-full border-2 border-red-500 mr-2 items-center justify-center"><View className="w-1.5 h-1.5 rounded-full bg-blue-500" /></View>
+                      <Label className="font-bold text-sm text-gray-800">Google</Label>
+                    </TouchableOpacity>
+                    <TouchableOpacity className="flex-1 flex-row items-center justify-center bg-gray-50 rounded-xl py-3.5 border border-gray-100">
+                      <View className="w-4 h-4 rounded-full bg-gray-800 mr-2" />
+                      <Label className="font-bold text-sm text-gray-800">Apple</Label>
+                    </TouchableOpacity>
                   </View>
                 </>
               )}
-
-              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
-                {activeTab === 'signIn' ? 'Email or Username' : 'Email Address'}
-              </Label>
-              <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                <AtSign size={18} color="#4B5563" className="mr-3" />
-                <TextInput
-                  className="flex-1 text-sm text-gray-900 font-sans"
-                  placeholder="name@journal.com"
-                  placeholderTextColor="#9CA3AF"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
-              </View>
-
-              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Password</Label>
-              <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                <Lock size={18} color="#4B5563" className="mr-3" />
-                <TextInput
-                  className="flex-1 text-sm text-gray-900 font-sans"
-                  placeholder="••••••••"
-                  placeholderTextColor="#9CA3AF"
-                  secureTextEntry={!showPassword}
-                  value={password}
-                  onChangeText={setPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="p-1">
-                  {showPassword ? <EyeOff size={18} color="#6B7280" /> : <Eye size={18} color="#6B7280" />}
-                </TouchableOpacity>
-              </View>
-
-              {activeTab === 'signIn' ? (
-                <View className="flex-row items-center justify-between mb-6">
-                  <TouchableOpacity
-                    className="flex-row items-center"
-                    onPress={() => setRememberMe(!rememberMe)}
-                    activeOpacity={0.8}
-                  >
-                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${rememberMe ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
-                      {rememberMe && <Check size={12} color="white" />}
-                    </View>
-                    <Label className="text-sm text-gray-600">Remember me</Label>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Label className="text-sm font-bold text-[#002249]">Forgot password?</Label>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View className="flex-row items-center mb-6">
-                  <TouchableOpacity
-                    className="flex-row items-center"
-                    onPress={() => setTermsAgreed(!termsAgreed)}
-                    activeOpacity={0.8}
-                  >
-                    <View className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${termsAgreed ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'}`}>
-                      {termsAgreed && <Check size={12} color="white" />}
-                    </View>
-                    <Label className="text-sm text-gray-600">I agree to Terms & Privacy Policy</Label>
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              <TouchableOpacity
-                onPress={() => setIsLoggedIn(true)}
-                className="bg-[#002249] flex-row items-center justify-center rounded-xl py-4 mb-6"
-                activeOpacity={0.9}
-              >
-                <Label className="text-white font-bold text-base mr-2">
-                  {activeTab === 'signIn' ? 'Sign In to Journal' : 'Create Account'}
-                </Label>
-                <ArrowRight size={18} color="white" />
-              </TouchableOpacity>
-
-              <View className="flex-row items-center justify-center mb-6">
-                <View className="flex-1 h-px bg-gray-200" />
-                <Label className="mx-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Or Continue With</Label>
-                <View className="flex-1 h-px bg-gray-200" />
-              </View>
-
-              <View className="flex-row gap-3">
-                <TouchableOpacity onPress={() => setIsLoggedIn(true)} className="flex-1 flex-row items-center justify-center bg-gray-50 rounded-xl py-3.5 border border-gray-100">
-                  <View className="w-4 h-4 rounded-full border-2 border-red-500 mr-2 items-center justify-center"><View className="w-1.5 h-1.5 rounded-full bg-blue-500" /></View>
-                  <Label className="font-bold text-sm text-gray-800">Google</Label>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsLoggedIn(true)} className="flex-1 flex-row items-center justify-center bg-gray-50 rounded-xl py-3.5 border border-gray-100">
-                  <View className="w-4 h-4 rounded-full bg-gray-800 mr-2" />
-                  <Label className="font-bold text-sm text-gray-800">Apple</Label>
-                </TouchableOpacity>
-              </View>
 
             </View>
           </View>
@@ -488,7 +684,12 @@ export default function ProfileScreen() {
               <Label className="text-sm text-gray-600 mr-1">
                 {activeTab === 'signIn' ? "Don't have an account yet?" : "Already have an account?"}
               </Label>
-              <TouchableOpacity onPress={() => setActiveTab(activeTab === 'signIn' ? 'create' : 'signIn')}>
+              <TouchableOpacity onPress={() => {
+                setActiveTab(activeTab === 'signIn' ? 'create' : 'signIn');
+                clearError();
+                setLocalMessage(null);
+                setShowOtpView(false);
+              }}>
                 <Label className="text-sm font-bold text-[#002249]">
                   {activeTab === 'signIn' ? 'Register now' : 'Sign In'}
                 </Label>
@@ -506,4 +707,3 @@ export default function ProfileScreen() {
     </SafeAreaView>
   );
 }
-

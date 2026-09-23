@@ -1,6 +1,6 @@
+import { router } from 'expo-router';
 import { Search } from 'lucide-react-native';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
 import { Avatar } from '../ui/Avatar';
 
 export function Header() {

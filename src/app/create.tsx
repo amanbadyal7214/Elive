@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import {
   ArrowLeft,
   ArrowRight,
@@ -34,6 +34,7 @@ const categories = [
 ];
 
 export default function CreateArticleScreen() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
