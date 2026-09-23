@@ -60,11 +60,11 @@ export function TrendingNow() {
     <View className="py-6 px-4 bg-white border-t border-gray-100">
       <View className="flex-row items-center justify-between mb-4">
         <View className="flex-row items-center">
-          <Flame color="#C9182B" size={20} className="mr-2" />
+          <Flame color="#002249" size={20} className="mr-2" />
           <Headline className="text-xl font-bold">Trending Now</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/editors-pick')} activeOpacity={0.7}>
-          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Editor's Pick {'>'}</Label>
+          <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Editor's Pick {'>'}</Label>
         </TouchableOpacity>
       </View>
 

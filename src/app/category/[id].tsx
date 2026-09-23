@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Activity, ArrowDown, ArrowLeft, Bookmark, Clock, Flame, Radio, SlidersHorizontal, Sparkles } from 'lucide-react-native';
+import { useState } from 'react';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Bookmark, Clock, ArrowDown, Activity, SlidersHorizontal, ArrowLeft, Flame, Radio, Sparkles } from 'lucide-react-native';
-import { Headline, Label } from '../../components/ui/Typography';
-import { Badge } from '../../components/ui/Badge';
-import { Header } from '../../components/home/Header';
 import { BottomNav } from '../../components/home/BottomNav';
+import { Header } from '../../components/home/Header';
+import { Badge } from '../../components/ui/Badge';
+import { Headline, Label } from '../../components/ui/Typography';
 
 interface SectionConfig {
   title: string;
@@ -266,8 +266,8 @@ export default function CategoryDetails() {
       <ScrollView className="flex-1 bg-[#F8F9FA]" showsVerticalScrollIndicator={false}>
         <View className="px-4 py-6 bg-white">
           {/* Back button */}
-          <TouchableOpacity 
-            onPress={() => router.back()} 
+          <TouchableOpacity
+            onPress={() => router.back()}
             className="flex-row items-center mb-4 self-start"
           >
             <ArrowLeft size={16} color="#4B5563" className="mr-1.5" />
@@ -279,9 +279,9 @@ export default function CategoryDetails() {
             <View className="w-1.5 h-1.5 rounded-full bg-primary mr-2" />
             <Label className="text-[10px] text-primary font-bold uppercase tracking-widest">{currentSection.tag}</Label>
           </View>
-          
+
           <Headline className="text-3xl mb-3 text-gray-900 font-serif">{currentSection.title}</Headline>
-          
+
           <Label className="text-sm text-gray-600 leading-relaxed mb-6 font-serif">
             {currentSection.description}
           </Label>
@@ -305,7 +305,7 @@ export default function CategoryDetails() {
           {/* Sub-filters */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6 -mx-4 px-4">
             {currentSection.subFilters.map((filter, index) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={index}
                 onPress={() => setActiveSub(filter)}
                 className={`px-4 py-2 rounded-full mr-2 ${activeSub === filter ? 'bg-[#8B0000]' : 'bg-blue-50 border border-blue-100'}`}
@@ -318,13 +318,13 @@ export default function CategoryDetails() {
           {/* Sorting Toolbar */}
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row bg-gray-50 p-1 rounded-xl border border-gray-100">
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveSort('Latest')}
                 className={`px-4 py-1.5 rounded-lg ${activeSort === 'Latest' ? 'bg-white shadow-sm' : ''}`}
               >
                 <Label className={`text-xs font-bold ${activeSort === 'Latest' ? 'text-gray-900' : 'text-gray-500'}`}>Latest</Label>
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveSort('Most Read')}
                 className={`px-4 py-1.5 rounded-lg ${activeSort === 'Most Read' ? 'bg-white shadow-sm' : ''}`}
               >
@@ -342,8 +342,8 @@ export default function CategoryDetails() {
         {/* Article List */}
         <View className="px-4 py-4 gap-y-4 bg-[#F8F9FA]">
           {filteredArticles.map((article) => (
-            <TouchableOpacity 
-              key={article.id} 
+            <TouchableOpacity
+              key={article.id}
               activeOpacity={0.8}
               onPress={() => router.push(`/article/${article.id}`)}
               className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
@@ -355,7 +355,7 @@ export default function CategoryDetails() {
                   <Bookmark size={20} color="#6B7280" />
                 </TouchableOpacity>
               </View>
-              
+
               <View className="flex-row justify-between">
                 <View className="flex-1 pr-4 justify-between">
                   <Headline className="text-[17px] leading-snug mb-1 text-gray-900" numberOfLines={2}>
@@ -364,19 +364,19 @@ export default function CategoryDetails() {
                   <Label className="text-xs text-gray-500 leading-relaxed mb-3" numberOfLines={2}>
                     {article.excerpt}
                   </Label>
-                  
+
                   <View className="flex-row items-center">
                     <Label className="text-xs text-gray-700 font-medium">{article.author}</Label>
                     <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
                     <Label className="text-[11px] text-gray-500">{article.date}</Label>
                     <View className="flex-1" />
                     <View className="flex-row items-center">
-                      <Clock size={12} color="#C9182B" className="mr-1" />
-                      <Label className="text-[11px] font-bold text-[#C9182B]">{article.readTime}</Label>
+                      <Clock size={12} color="#002249" className="mr-1" />
+                      <Label className="text-[11px] font-bold text-primary">{article.readTime}</Label>
                     </View>
                   </View>
                 </View>
-                
+
                 <Image
                   source={{ uri: article.image }}
                   className="w-24 h-24 rounded-xl bg-gray-100"
@@ -384,7 +384,7 @@ export default function CategoryDetails() {
               </View>
             </TouchableOpacity>
           ))}
-          
+
           {/* Load More Button */}
           <View className="items-center py-6">
             <TouchableOpacity className="bg-white border border-gray-200 w-full py-3.5 rounded-xl flex-row justify-center items-center shadow-sm">
@@ -393,7 +393,7 @@ export default function CategoryDetails() {
             </TouchableOpacity>
           </View>
         </View>
-        
+
         {/* Padding for Bottom Nav */}
         <View className="h-24" />
       </ScrollView>

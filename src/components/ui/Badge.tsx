@@ -15,6 +15,7 @@ const badgeVariants = cva(
         blue: 'bg-blue-100',
         green: 'bg-green-100',
         pink: 'bg-pink-100',
+        red: 'bg-red-100',
       },
     },
     defaultVariants: {
@@ -35,6 +36,7 @@ const textVariants = cva(
         blue: 'text-blue-700',
         green: 'text-green-700',
         pink: 'text-pink-700',
+        red: 'text-red-700',
       },
     },
     defaultVariants: {

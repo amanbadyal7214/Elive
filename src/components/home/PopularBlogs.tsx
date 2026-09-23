@@ -1,9 +1,7 @@
-import React from 'react';
-import { View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AlignLeft, Heart, MessageCircle, Share2 } from 'lucide-react-native';
-import { Headline, Body, Label } from '../ui/Typography';
-import { Avatar } from '../ui/Avatar';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Body, Headline, Label } from '../ui/Typography';
 
 const blogs = [
   {
@@ -43,7 +41,7 @@ export function PopularBlogs() {
           <Headline className="text-xl">Popular Blogs</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/popular-blogs')} activeOpacity={0.7}>
-          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Community Voices {'>'}</Label>
+          <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Community Voices {'>'}</Label>
         </TouchableOpacity>
       </View>
 
@@ -53,9 +51,9 @@ export function PopularBlogs() {
         contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
       >
         {blogs.map((blog) => (
-          <TouchableOpacity 
-            key={blog.id} 
-            className="w-80 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm" 
+          <TouchableOpacity
+            key={blog.id}
+            className="w-80 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
             activeOpacity={0.9}
             onPress={() => router.push(`/article/${blog.id}`)}
           >
@@ -90,7 +88,7 @@ export function PopularBlogs() {
                 <Heart size={16} color="#6B7280" className="mr-1.5" />
                 <Label className="text-xs text-gray-500">{blog.likes}</Label>
               </TouchableOpacity>
-              
+
               <View className="flex-row items-center space-x-4">
                 <TouchableOpacity className="flex-row items-center">
                   <MessageCircle size={16} color="#6B7280" className="mr-1.5" />

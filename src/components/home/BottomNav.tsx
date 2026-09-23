@@ -20,12 +20,12 @@ export function BottomNav() {
     >
       
       <TouchableOpacity onPress={() => router.push('/')} className="items-center py-2 flex-1">
-        <Home color={isHome ? '#C9182B' : '#9CA3AF'} size={24} />
+        <Home color={isHome ? '#002249' : '#9CA3AF'} size={24} />
         <Label className={`text-[10px] mt-1 font-bold ${isHome ? 'text-primary' : 'text-gray-400'}`}>Home</Label>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/explore')} className="items-center py-2 flex-1">
-        <Grid color={isExplore ? '#C9182B' : '#9CA3AF'} size={24} />
+        <Grid color={isExplore ? '#002249' : '#9CA3AF'} size={24} />
         <Label className={`text-[10px] mt-1 font-bold ${isExplore ? 'text-primary' : 'text-gray-400'}`}>Categories</Label>
       </TouchableOpacity>
 
@@ -46,7 +46,7 @@ export function BottomNav() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/profile')} className="items-center py-2 flex-1">
-        <User color={isProfile ? '#C9182B' : '#9CA3AF'} size={24} />
+        <User color={isProfile ? '#002249' : '#9CA3AF'} size={24} />
         <Label className={`text-[10px] mt-1 font-bold ${isProfile ? 'text-primary' : 'text-gray-400'}`}>Profile</Label>
       </TouchableOpacity>
 

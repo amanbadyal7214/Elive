@@ -1,39 +1,39 @@
-import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { Search, X, Layers, Filter } from 'lucide-react-native';
-import { Headline, Label } from '../components/ui/Typography';
-import { Badge } from '../components/ui/Badge';
-import { Header } from '../components/home/Header';
+import { Filter, Layers, Search, X } from 'lucide-react-native';
+import { useState } from 'react';
+import { Image, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';
+import { Header } from '../components/home/Header';
+import { Badge } from '../components/ui/Badge';
+import { Headline, Label } from '../components/ui/Typography';
 
 const filters = [
-  { 
-    id: 'all', 
-    label: 'All', 
-    color: '#FFFFFF', 
-    bg: '#C9182B',
+  {
+    id: 'all',
+    label: 'All',
+    color: '#FFFFFF',
+    bg: '#002249',
     subcategories: ['All', 'Trending', 'Guides', 'Opinions', 'Reports']
   },
-  { 
-    id: 'career', 
-    label: 'Career & Skills', 
-    color: '#4F46E5', 
+  {
+    id: 'career',
+    label: 'Career & Skills',
+    color: '#4F46E5',
     bg: '#4F46E5',
     subcategories: ['All', 'Leadership', 'Remote Work', 'Productivity', 'Tech Skills', 'Soft Skills']
   },
-  { 
-    id: 'current', 
-    label: 'Current Affairs', 
-    color: '#C9182B', 
-    bg: '#C9182B',
+  {
+    id: 'current',
+    label: 'Current Affairs',
+    color: '#002249',
+    bg: '#002249',
     subcategories: ['All', 'Global Economy', 'Environment', 'Policy', 'Tech Trends']
   },
-  { 
-    id: 'entertainment', 
-    label: 'Entertainment', 
-    color: '#059669', 
+  {
+    id: 'entertainment',
+    label: 'Entertainment',
+    color: '#059669',
     bg: '#059669',
     subcategories: ['All', 'Film & TV', 'Culture', 'Slow Living', 'Digital Art']
   },
@@ -112,11 +112,11 @@ export default function ExploreScreen() {
   const filteredArticles = editorsPicks.filter(article => {
     const matchesCategory = selectedCategory === 'all' || article.categoryId === selectedCategory;
     const matchesSubCategory = selectedSubCategory === 'All' || article.subcategory === selectedSubCategory;
-    const matchesSearch = searchQuery.trim() === '' || 
-      article.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = searchQuery.trim() === '' ||
+      article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.author.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
     return matchesCategory && matchesSubCategory && matchesSearch;
   });
 
@@ -129,7 +129,7 @@ export default function ExploreScreen() {
         <View className="px-4 py-4 border-b border-gray-100">
           <View className="flex-row items-center bg-gray-100 px-4 py-3 rounded-full border border-gray-200">
             <Search size={20} color="#6B7280" className="mr-3" />
-            <TextInput 
+            <TextInput
               className="flex-1 text-sm text-gray-900 font-sans"
               placeholder="Search articles, topics, authors..."
               placeholderTextColor="#9CA3AF"
@@ -150,24 +150,23 @@ export default function ExploreScreen() {
             <Label className="text-[10px] font-bold text-gray-800 uppercase tracking-widest">Explore By Desk</Label>
             {selectedCategory !== 'all' && (
               <TouchableOpacity onPress={() => { setSelectedCategory('all'); setSelectedSubCategory('All'); }}>
-                <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Reset Filters</Label>
+                <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Reset Filters</Label>
               </TouchableOpacity>
             )}
           </View>
-          
+
           {/* Main Categories Row */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="px-4">
             {filters.map((filter) => {
               const isSelected = selectedCategory === filter.id;
               return (
-                <TouchableOpacity 
+                <TouchableOpacity
                   key={filter.id}
                   onPress={() => handleCategoryPress(filter.id)}
-                  className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border ${
-                    isSelected 
-                      ? 'border-transparent shadow-sm' 
+                  className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border ${isSelected
+                      ? 'border-transparent shadow-sm'
                       : 'bg-gray-50 border-gray-200'
-                  }`}
+                    }`}
                   style={{ backgroundColor: isSelected ? filter.bg : '#F9FAFB' }}
                 >
                   {!isSelected && filter.id !== 'all' && (
@@ -198,11 +197,10 @@ export default function ExploreScreen() {
                     <TouchableOpacity
                       key={index}
                       onPress={() => setSelectedSubCategory(sub)}
-                      className={`px-3.5 py-1.5 rounded-xl mr-2 flex-row items-center border ${
-                        isSubActive 
-                          ? 'bg-gray-900 border-gray-900 shadow-sm' 
+                      className={`px-3.5 py-1.5 rounded-xl mr-2 flex-row items-center border ${isSubActive
+                          ? 'bg-gray-900 border-gray-900 shadow-sm'
                           : 'bg-gray-50 border-gray-200'
-                      }`}
+                        }`}
                     >
                       <Label className={`text-xs font-semibold ${isSubActive ? 'text-white' : 'text-gray-700'}`}>
                         {sub}
@@ -221,7 +219,7 @@ export default function ExploreScreen() {
           {/* Editor's Selection */}
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-2">
-              <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">
+              <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">
                 {selectedCategory === 'all' ? "Editor's Selection" : `${activeCategoryObj.label}`}
               </Label>
               <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -229,10 +227,10 @@ export default function ExploreScreen() {
               </Label>
             </View>
             <Headline className="text-2xl mb-6 font-serif">
-              {selectedSubCategory !== 'All' 
-                ? `${selectedSubCategory} Articles` 
-                : selectedCategory !== 'all' 
-                  ? `${activeCategoryObj.label} Stories` 
+              {selectedSubCategory !== 'All'
+                ? `${selectedSubCategory} Articles`
+                : selectedCategory !== 'all'
+                  ? `${activeCategoryObj.label} Stories`
                   : 'Top Recommended For You'}
             </Headline>
 
@@ -243,9 +241,9 @@ export default function ExploreScreen() {
                 <Label className="text-xs text-gray-500 text-center mb-4">
                   No articles matched your selected category and subcategory.
                 </Label>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => { setSelectedCategory('all'); setSelectedSubCategory('All'); setSearchQuery(''); }}
-                  className="bg-[#C9182B] px-5 py-2.5 rounded-full"
+                  className="bg-primary px-5 py-2.5 rounded-full"
                 >
                   <Label className="text-white text-xs font-bold">Clear Filters</Label>
                 </TouchableOpacity>
@@ -253,7 +251,7 @@ export default function ExploreScreen() {
             ) : (
               <View className="gap-y-6">
                 {filteredArticles.map((article) => (
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     key={article.id}
                     onPress={() => router.push(`/article/${article.id}`)}
                     activeOpacity={0.8}
@@ -281,7 +279,7 @@ export default function ExploreScreen() {
               </View>
             )}
           </View>
-          
+
         </View>
         {/* Padding for Bottom Nav */}
         <View className="h-24 bg-[#F8F9FA]" />

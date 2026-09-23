@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, ScrollView, Image, TouchableOpacity, Text } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { ArrowLeft, Bookmark, Clock, Download, Eye, MessageCircle, Quote, Share2, ThumbsUp } from 'lucide-react-native';
+import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Bookmark, Share2, MessageCircle, Type, ThumbsUp, Quote, Clock, Eye, Download } from 'lucide-react-native';
-import { Headline, Label } from '../../components/ui/Typography';
-import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/Avatar';
+import { Badge } from '../../components/ui/Badge';
+import { Headline, Label } from '../../components/ui/Typography';
 
 import { Header } from '../../components/home/Header';
 
@@ -126,7 +125,7 @@ export default function ArticleDetails() {
         {/* Meta Info */}
         <View className="px-4 pt-4 pb-2">
           {/* Top Bar Back Button */}
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => router.back()}
             className="flex-row items-center mb-4 self-start bg-gray-100 px-3 py-1.5 rounded-full"
           >
@@ -243,7 +242,7 @@ export default function ArticleDetails() {
 
           {/* Pull Quote */}
           <View className="bg-red-50/50 border-l-4 border-primary p-5 my-6 rounded-r-xl">
-            <Quote size={24} color="#C9182B" className="mb-3" />
+            <Quote size={24} color="#002249" className="mb-3" />
             <Headline className="text-2xl text-primary leading-snug italic mb-4">
               "The danger is not that machines begin to think like humans, but that humans willingly downsample their cognition to match the prompts."
             </Headline>
@@ -326,7 +325,7 @@ export default function ArticleDetails() {
           {/* Bottom Actions */}
           <View className="flex-row items-center justify-between border-t border-b border-gray-100 py-4 mb-8">
             <TouchableOpacity className="flex-row items-center border border-gray-200 rounded-full px-4 py-2">
-              <ThumbsUp size={16} color="#C9182B" className="mr-2" />
+              <ThumbsUp size={16} color="#002249" className="mr-2" />
               <Headline className="text-sm text-gray-800">1,348 Applauds</Headline>
             </TouchableOpacity>
             <View className="flex-row items-center gap-3">
@@ -353,7 +352,7 @@ export default function ArticleDetails() {
             <Label className="text-sm text-gray-600 leading-relaxed mb-5">
               Investigating the subtle technical forces between human cognition and ambient machine intelligence. Author of the NYT Bestseller, 'Obsolete' (2024).
             </Label>
-            
+
             <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">More From Elena</Label>
             <View className="bg-white rounded-xl overflow-hidden border border-gray-100">
               <TouchableOpacity className="p-3 border-b border-gray-50 flex-row justify-between items-center">
@@ -476,9 +475,9 @@ export default function ArticleDetails() {
               {/* Related Card 1 */}
               <TouchableOpacity className="w-64 mr-4 bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                 <View className="h-32 relative">
-                  <Image source={{uri: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?w=400&q=80'}} className="w-full h-full" />
+                  <Image source={{ uri: 'https://images.unsplash.com/photo-1503694978374-8a2fa686963a?w=400&q=80' }} className="w-full h-full" />
                   <View className="absolute top-2 left-2 bg-black/70 px-2 py-0.5 rounded">
-                     <Label className="text-[10px] text-white font-bold uppercase tracking-widest">Architecture</Label>
+                    <Label className="text-[10px] text-white font-bold uppercase tracking-widest">Architecture</Label>
                   </View>
                 </View>
                 <View className="p-3">
@@ -490,9 +489,9 @@ export default function ArticleDetails() {
               {/* Related Card 2 */}
               <TouchableOpacity className="w-64 mr-4 bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                 <View className="h-32 relative">
-                  <Image source={{uri: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80'}} className="w-full h-full" />
+                  <Image source={{ uri: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' }} className="w-full h-full" />
                   <View className="absolute top-2 left-2 bg-black/70 px-2 py-0.5 rounded">
-                     <Label className="text-[10px] text-white font-bold uppercase tracking-widest">Essay</Label>
+                    <Label className="text-[10px] text-white font-bold uppercase tracking-widest">Essay</Label>
                   </View>
                 </View>
                 <View className="p-3">
@@ -502,7 +501,7 @@ export default function ArticleDetails() {
               </TouchableOpacity>
             </ScrollView>
           </View>
-          
+
           <View className="h-8" />
         </View>
       </ScrollView>

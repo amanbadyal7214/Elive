@@ -1,31 +1,30 @@
-import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { 
-  AtSign, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  ArrowRight, 
-  BookOpen, 
-  Check, 
-  User, 
-  Search, 
-  Sun, 
-  SlidersHorizontal, 
-  Edit3, 
-  CheckCircle2, 
-  ArrowUpDown, 
-  Heart, 
-  MessageSquare, 
+import {
+  ArrowRight,
+  ArrowUpDown,
+  AtSign,
+  Check,
+  CheckCircle2,
+  Edit3,
+  Eye,
+  EyeOff,
+  Heart,
+  Lock,
+  LogOut,
+  MessageSquare,
   MoreHorizontal,
-  LogOut
+  Search,
+  SlidersHorizontal,
+  Sun,
+  User
 } from 'lucide-react-native';
-import { Headline, Label, Body } from '../components/ui/Typography';
-import { Badge } from '../components/ui/Badge';
-import { Avatar } from '../components/ui/Avatar';
+import { useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';
+import { Avatar } from '../components/ui/Avatar';
+import { Badge } from '../components/ui/Badge';
+import { Body, Headline, Label } from '../components/ui/Typography';
 
 const articles = [
   {
@@ -81,7 +80,7 @@ export default function ProfileScreen() {
   if (isLoggedIn) {
     return (
       <SafeAreaView className="flex-1 bg-[#F8F9FA]" edges={['top']}>
-        
+
         {/* Profile Top Navigation Header */}
         <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
           <View className="flex-row items-center gap-2">
@@ -90,7 +89,7 @@ export default function ProfileScreen() {
               style={{ width: 110, height: 28, resizeMode: 'contain' }}
             />
             <View className="bg-gray-100 px-2 py-0.5 rounded-md">
-              <Label className="text-[10px] font-bold text-[#C9182B] tracking-wider uppercase">PROFILE</Label>
+              <Label className="text-[10px] font-bold text-primary tracking-wider uppercase">PROFILE</Label>
             </View>
           </View>
 
@@ -108,16 +107,16 @@ export default function ProfileScreen() {
         </View>
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-          
+
           {/* Profile Hero Card */}
           <View className="px-4 pt-4 mb-4">
             <View className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 12 }}>
-              
+
               {/* Avatar & Actions Row */}
               <View className="flex-row justify-between items-start mb-4">
                 <View className="relative">
                   <Avatar src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300" size={80} className="border-2 border-white shadow-md" />
-                  <View className="absolute bottom-0 right-0 bg-[#C9182B] rounded-full p-0.5 border-2 border-white">
+                  <View className="absolute bottom-0 right-0 bg-primary rounded-full p-0.5 border-2 border-white">
                     <CheckCircle2 color="white" size={14} />
                   </View>
                 </View>
@@ -137,7 +136,7 @@ export default function ProfileScreen() {
               <Headline className="text-2xl font-serif text-gray-900 mb-0.5">Elena Vance</Headline>
               <Label className="text-xs font-mono text-gray-500 mb-1">@elenavance</Label>
               <Label className="text-xs font-bold text-[#980000] mb-3">Senior Tech Editor & Writer</Label>
-              
+
               <Body className="text-xs text-gray-600 leading-relaxed font-serif mb-6">
                 Writing about emerging technology, workplace anthropology, and cognitive depth. Fellow at Institute for Digital Ecology.
               </Body>
@@ -170,7 +169,7 @@ export default function ProfileScreen() {
           {/* Segmented Tabs Bar */}
           <View className="px-4 mb-6">
             <View className="flex-row bg-gray-200/80 rounded-2xl p-1">
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveProfileTab('articles')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'articles' ? 'bg-white shadow-sm' : ''}`}
               >
@@ -182,7 +181,7 @@ export default function ProfileScreen() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveProfileTab('saved')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'saved' ? 'bg-white shadow-sm' : ''}`}
               >
@@ -194,7 +193,7 @@ export default function ProfileScreen() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveProfileTab('responses')}
                 className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'responses' ? 'bg-white shadow-sm' : ''}`}
               >
@@ -222,7 +221,7 @@ export default function ProfileScreen() {
           {/* Published Works Article Cards */}
           <View className="px-4 gap-y-4 mb-6">
             {articles.map((item) => (
-              <TouchableOpacity 
+              <TouchableOpacity
                 key={item.id}
                 onPress={() => router.push(`/article/${item.id}`)}
                 activeOpacity={0.9}
@@ -244,7 +243,7 @@ export default function ProfileScreen() {
                     </Label>
                   </View>
 
-                  <Image 
+                  <Image
                     source={{ uri: item.image }}
                     className="w-20 h-20 rounded-2xl bg-gray-100"
                   />
@@ -254,7 +253,7 @@ export default function ProfileScreen() {
                 <View className="flex-row items-center justify-between pt-3 border-t border-gray-100">
                   <View className="flex-row items-center gap-4">
                     <View className="flex-row items-center gap-1">
-                      <Heart color="#C9182B" size={14} />
+                      <Heart color="#002249" size={14} />
                       <Label className="text-xs text-gray-600 font-medium">{item.claps} claps</Label>
                     </View>
 
@@ -281,7 +280,7 @@ export default function ProfileScreen() {
           <View className="px-4 mb-6">
             <View className="bg-gray-100 rounded-3xl p-6 border border-gray-200/80">
               <View className="flex-row items-center mb-2">
-                <View className="w-2 h-2 rounded-full bg-[#C9182B] mr-2" />
+                <View className="w-2 h-2 rounded-full bg-primary mr-2" />
                 <Label className="text-[10px] font-bold text-gray-800 uppercase tracking-widest">
                   WEEKLY CURATED LETTER
                 </Label>
@@ -297,7 +296,7 @@ export default function ProfileScreen() {
 
               <View className="bg-white rounded-full flex-row items-center px-4 py-3 border border-gray-200 mb-3">
                 <AtSign color="#9CA3AF" size={18} className="mr-2" />
-                <TextInput 
+                <TextInput
                   className="flex-1 text-xs text-gray-900 font-sans p-0"
                   placeholder="Enter your email address"
                   placeholderTextColor="#9CA3AF"
@@ -326,12 +325,12 @@ export default function ProfileScreen() {
   // Fallback: Login / Auth View when isLoggedIn === false
   return (
     <SafeAreaView className="flex-1 bg-[#F8F9FA]" edges={['top']}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-          
+
           {/* Hero Section */}
           <View className="items-center px-6 pt-8 pb-6">
             <View className="bg-gray-100 rounded-2xl p-4 mb-6">
@@ -344,7 +343,7 @@ export default function ProfileScreen() {
               {activeTab === 'signIn' ? 'Welcome to eLiveToday' : 'Join eLiveToday'}
             </Headline>
             <Label className="text-sm text-center text-gray-600 leading-relaxed px-4 font-serif">
-              {activeTab === 'signIn' 
+              {activeTab === 'signIn'
                 ? 'Sign in to access personalized feeds, save articles, and engage with the community.'
                 : 'Create a free account to personalize your feed, save stories, and join the discussion.'
               }
@@ -354,13 +353,13 @@ export default function ProfileScreen() {
           {/* Auth Tabs */}
           <View className="px-4 mb-6">
             <View className="flex-row bg-gray-200 rounded-xl p-1">
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveTab('signIn')}
                 className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'signIn' ? 'bg-white shadow-sm' : ''}`}
               >
                 <Label className={`font-bold text-sm ${activeTab === 'signIn' ? 'text-gray-900' : 'text-gray-500'}`}>Sign In</Label>
               </TouchableOpacity>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setActiveTab('create')}
                 className={`flex-1 py-3 rounded-lg items-center ${activeTab === 'create' ? 'bg-white shadow-sm' : ''}`}
               >
@@ -372,13 +371,13 @@ export default function ProfileScreen() {
           {/* Form Card */}
           <View className="px-4 mb-6">
             <View className="bg-white rounded-3xl p-6 border border-gray-100" style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 12 }}>
-              
+
               {activeTab === 'create' && (
                 <>
                   <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Full Name</Label>
                   <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
                     <User size={18} color="#4B5563" className="mr-3" />
-                    <TextInput 
+                    <TextInput
                       className="flex-1 text-sm text-gray-900 font-sans"
                       placeholder="John Doe"
                       placeholderTextColor="#9CA3AF"
@@ -394,7 +393,7 @@ export default function ProfileScreen() {
               </Label>
               <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
                 <AtSign size={18} color="#4B5563" className="mr-3" />
-                <TextInput 
+                <TextInput
                   className="flex-1 text-sm text-gray-900 font-sans"
                   placeholder="name@journal.com"
                   placeholderTextColor="#9CA3AF"
@@ -408,7 +407,7 @@ export default function ProfileScreen() {
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Password</Label>
               <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
                 <Lock size={18} color="#4B5563" className="mr-3" />
-                <TextInput 
+                <TextInput
                   className="flex-1 text-sm text-gray-900 font-sans"
                   placeholder="••••••••"
                   placeholderTextColor="#9CA3AF"
@@ -423,8 +422,8 @@ export default function ProfileScreen() {
 
               {activeTab === 'signIn' ? (
                 <View className="flex-row items-center justify-between mb-6">
-                  <TouchableOpacity 
-                    className="flex-row items-center" 
+                  <TouchableOpacity
+                    className="flex-row items-center"
                     onPress={() => setRememberMe(!rememberMe)}
                     activeOpacity={0.8}
                   >
@@ -439,8 +438,8 @@ export default function ProfileScreen() {
                 </View>
               ) : (
                 <View className="flex-row items-center mb-6">
-                  <TouchableOpacity 
-                    className="flex-row items-center" 
+                  <TouchableOpacity
+                    className="flex-row items-center"
                     onPress={() => setTermsAgreed(!termsAgreed)}
                     activeOpacity={0.8}
                   >
@@ -452,9 +451,9 @@ export default function ProfileScreen() {
                 </View>
               )}
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setIsLoggedIn(true)}
-                className="bg-[#980000] flex-row items-center justify-center rounded-xl py-4 mb-6" 
+                className="bg-[#980000] flex-row items-center justify-center rounded-xl py-4 mb-6"
                 activeOpacity={0.9}
               >
                 <Label className="text-white font-bold text-base mr-2">

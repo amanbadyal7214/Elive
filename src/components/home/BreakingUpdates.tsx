@@ -1,9 +1,8 @@
-import React from 'react';
-import { View, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ThumbsUp, ThumbsDown, MessageCircle, Clock } from 'lucide-react-native';
-import { Headline, Label } from '../ui/Typography';
+import { Clock, MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react-native';
+import { ImageBackground, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Badge } from '../ui/Badge';
+import { Headline, Label } from '../ui/Typography';
 
 const updates = [
   {
@@ -35,7 +34,7 @@ export function BreakingUpdates() {
           <Headline className="text-lg">Breaking Updates</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/live-desk')} activeOpacity={0.7}>
-          <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">Live Desk {'>'}</Label>
+          <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Live Desk {'>'}</Label>
         </TouchableOpacity>
       </View>
 
@@ -45,9 +44,9 @@ export function BreakingUpdates() {
         contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
       >
         {updates.map((item) => (
-          <TouchableOpacity 
-            key={item.id} 
-            className="w-72 bg-white rounded-2xl border border-gray-100 overflow-hidden m-1" 
+          <TouchableOpacity
+            key={item.id}
+            className="w-72 bg-white rounded-2xl border border-gray-100 overflow-hidden m-1"
             style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}
             activeOpacity={0.9}
             onPress={() => router.push(`/article/${item.id}`)}
@@ -67,12 +66,12 @@ export function BreakingUpdates() {
                 </View>
               </ImageBackground>
             </View>
-            
+
             <View className="p-4">
               <Headline className="text-lg mb-3 leading-snug" numberOfLines={2}>
                 {item.title}
               </Headline>
-              
+
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center">
                   <Clock size={14} color="#6B7280" />

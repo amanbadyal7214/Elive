@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { 
-  ArrowLeft, 
-  Bookmark, 
-  Share2, 
-  Cloud, 
-  ArrowRight, 
-  Camera, 
-  Upload, 
-  ChevronDown, 
-  Check, 
-  Plus, 
-  Bold, 
-  Italic, 
-  Link as LinkIcon, 
-  Quote, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bold,
+  Bookmark,
+  Camera,
+  Check,
+  ChevronDown,
+  Cloud,
+  Eye,
+  Italic,
+  Link as LinkIcon,
   List,
+  Plus,
+  Quote,
+  Share2,
   Sparkles,
-  Eye
+  Upload
 } from 'lucide-react-native';
-import { Headline, Label, Body } from '../components/ui/Typography';
+import { useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
+import { Body, Headline, Label } from '../components/ui/Typography';
 
 const categories = [
   'Career & Skills',
@@ -67,14 +67,14 @@ export default function CreateArticleScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
-      
+
       {/* Top Header Bar */}
       <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
         <View className="flex-row items-center gap-3">
           <TouchableOpacity onPress={() => currentStep > 1 ? setCurrentStep((currentStep - 1) as any) : router.back()} className="p-1">
             <ArrowLeft color="#121417" size={22} />
           </TouchableOpacity>
-          
+
           <View className="flex-row items-center gap-2">
             <Image
               source={require('../../assets/images/elive_logo_1.png')}
@@ -137,7 +137,7 @@ export default function CreateArticleScreen() {
         </View>
 
         {currentStep < 3 ? (
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setCurrentStep((currentStep + 1) as any)}
             className="bg-[#980000] flex-row items-center px-4 py-2 rounded-full shadow-sm"
             activeOpacity={0.9}
@@ -148,7 +148,7 @@ export default function CreateArticleScreen() {
             <ArrowRight color="white" size={14} />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handlePublish}
             className="bg-[#980000] flex-row items-center px-4 py-2 rounded-full shadow-sm"
             activeOpacity={0.9}
@@ -162,12 +162,12 @@ export default function CreateArticleScreen() {
       </View>
 
       {/* Step Content */}
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
       >
-        <ScrollView 
-          className="flex-1 px-4 pt-4" 
+        <ScrollView
+          className="flex-1 px-4 pt-4"
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: 40 }}
@@ -179,7 +179,7 @@ export default function CreateArticleScreen() {
               {/* Cover Image Container */}
               <View className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 items-center justify-center mb-6">
                 <View className="w-12 h-12 rounded-full bg-red-50/80 items-center justify-center mb-3">
-                  <Camera color="#C9182B" size={22} />
+                  <Camera color="#002249" size={22} />
                 </View>
                 <Headline className="text-base text-gray-900 text-center mb-1 font-serif">
                   Add a high-resolution cover image
@@ -195,7 +195,7 @@ export default function CreateArticleScreen() {
 
               {/* Title Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Story Title</Label>
-              <TextInput 
+              <TextInput
                 className="text-2xl font-serif font-bold text-[#980000] mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100"
                 placeholder="Title of your story or analysis..."
                 placeholderTextColor="#9CA3AF"
@@ -206,7 +206,7 @@ export default function CreateArticleScreen() {
 
               {/* Subtitle Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Subtitle / Summary</Label>
-              <TextInput 
+              <TextInput
                 className="text-base font-serif text-gray-800 mb-6 p-4 bg-gray-50 rounded-2xl border border-gray-100"
                 placeholder="Write a captivating subtitle or brief summary..."
                 placeholderTextColor="#9CA3AF"
@@ -221,14 +221,14 @@ export default function CreateArticleScreen() {
                   <Label className="text-[10px] font-bold text-gray-700 uppercase tracking-widest">
                     Editorial Desk & Topics
                   </Label>
-                  <Label className="text-[10px] font-bold text-[#C9182B] uppercase tracking-widest">
+                  <Label className="text-[10px] font-bold text-[#002249] uppercase tracking-widest">
                     Required
                   </Label>
                 </View>
 
                 {/* Category Dropdown Selector */}
                 <View className="relative mb-3">
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
                     className="flex-row items-center justify-between bg-white px-4 py-2.5 rounded-full border border-gray-200 self-start"
                   >
@@ -239,13 +239,13 @@ export default function CreateArticleScreen() {
                   {showCategoryDropdown && (
                     <View className="bg-white rounded-xl border border-gray-200 shadow-lg mt-1 p-1 z-10">
                       {categories.map((cat) => (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           key={cat}
                           onPress={() => { setSelectedCategory(cat); setShowCategoryDropdown(false); }}
                           className="px-3 py-2 rounded-lg hover:bg-gray-50 flex-row items-center justify-between"
                         >
                           <Label className="text-xs font-medium text-gray-800">{cat}</Label>
-                          {selectedCategory === cat && <Check color="#C9182B" size={14} />}
+                          {selectedCategory === cat && <Check color="#002249" size={14} />}
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -260,11 +260,10 @@ export default function CreateArticleScreen() {
                       <TouchableOpacity
                         key={tag}
                         onPress={() => toggleTag(tag)}
-                        className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${
-                          isSelected 
-                            ? 'bg-[#3B4A6B] border-[#3B4A6B]' 
+                        className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${isSelected
+                            ? 'bg-[#3B4A6B] border-[#3B4A6B]'
                             : 'bg-white border-gray-200'
-                        }`}
+                          }`}
                       >
                         <Label className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-700'}`}>
                           {tag} {isSelected && '✓'}
@@ -281,7 +280,7 @@ export default function CreateArticleScreen() {
               </View>
 
               {/* Step 1 Next Button */}
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setCurrentStep(2)}
                 className="bg-[#980000] py-4 rounded-xl items-center justify-center flex-row shadow-sm mb-6"
               >
@@ -310,7 +309,7 @@ export default function CreateArticleScreen() {
               )}
 
               {/* Article Main Body Input */}
-              <TextInput 
+              <TextInput
                 className="text-base font-serif text-gray-800 leading-relaxed min-h-[320px] p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6"
                 placeholder="Start writing your article..."
                 placeholderTextColor="#9CA3AF"
@@ -322,14 +321,14 @@ export default function CreateArticleScreen() {
 
               {/* Navigation buttons */}
               <View className="flex-row gap-3 mb-6">
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => setCurrentStep(1)}
                   className="flex-1 py-3.5 rounded-xl border border-gray-200 items-center justify-center"
                 >
                   <Label className="font-bold text-gray-700 text-sm">Back</Label>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => setCurrentStep(3)}
                   className="flex-1 bg-[#980000] py-3.5 rounded-xl items-center justify-center flex-row"
                 >
@@ -384,14 +383,14 @@ export default function CreateArticleScreen() {
 
               {/* Navigation & Publish */}
               <View className="flex-row gap-3 mb-6">
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => setCurrentStep(2)}
                   className="flex-1 py-4 rounded-xl border border-gray-200 items-center justify-center"
                 >
                   <Label className="font-bold text-gray-700 text-sm">Edit Content</Label>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={handlePublish}
                   className="flex-1 bg-[#980000] py-4 rounded-xl items-center justify-center flex-row shadow-md"
                 >
