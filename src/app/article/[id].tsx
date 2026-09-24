@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../../components/home/Header';
 import { Avatar } from '../../components/ui/Avatar';
 import { Badge } from '../../components/ui/Badge';
+import { HtmlRenderer } from '../../components/ui/HtmlRenderer';
 import { Headline, Label } from '../../components/ui/Typography';
 import useArticleDetails from '../../hooks/useArticleDetails';
 
@@ -16,18 +17,6 @@ const formatImage = (raw: any): string => {
   if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
   if (raw.startsWith('/')) return `http://192.168.1.9:5000${raw}`;
   return `http://192.168.1.9:5000/uploads/${raw}`;
-};
-
-const formatContentParagraphs = (contentHtml?: string): string[] => {
-  if (!contentHtml) return [];
-  const text = contentHtml
-    .replace(/<p[^>]*>/gi, '\n\n')
-    .replace(/<\/p>/gi, '')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .trim();
-  return text.split(/\n\n+/).filter(Boolean);
 };
 
 export default function ArticleDetails() {
@@ -76,7 +65,7 @@ export default function ArticleDetails() {
     ? new Date(apiArticle.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
     : 'Recently';
 
-  const paragraphs = formatContentParagraphs(apiArticle?.content || apiArticle?.description);
+  const rawContent = apiArticle?.content || apiArticle?.description || '';
   const mainImage = formatImage(apiArticle?.image || apiArticle?.imageUrl || apiArticle?.coverImage);
 
   // Action Handlers
@@ -224,15 +213,11 @@ export default function ArticleDetails() {
 
           {/* Article Body Content */}
           <View className="px-4 pt-4 pb-8">
-            {paragraphs.length > 0 ? (
-              paragraphs.map((paragraph, idx) => (
-                <Headline key={idx} style={{ fontSize: fontSizeScale }} className="text-gray-800 leading-relaxed mb-6 font-normal">
-                  {paragraph}
-                </Headline>
-              ))
+            {rawContent ? (
+              <HtmlRenderer html={rawContent} baseFontSize={fontSizeScale} />
             ) : (
               <Headline style={{ fontSize: fontSizeScale }} className="text-gray-800 leading-relaxed mb-6 font-normal">
-                {apiArticle?.description || 'No description available for this article.'}
+                No description available for this article.
               </Headline>
             )}
 
