@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Bookmark, Clock, Download, Eye, MessageCircle, Share2, ThumbsUp } from 'lucide-react-native';
+import { ArrowLeft, Clock, Download, Eye, MessageCircle, Share2, ThumbsUp } from 'lucide-react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator, Image, ScrollView, Share, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,7 +28,6 @@ export default function ArticleDetails() {
   const [newCommentText, setNewCommentText] = useState('');
   const [commentsList, setCommentsList] = useState<any[]>([]);
   const [showAllComments, setShowAllComments] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [fontSizeScale, setFontSizeScale] = useState<number>(18);
 
   useEffect(() => {
@@ -88,10 +87,6 @@ export default function ArticleDetails() {
 
   const scrollToComments = () => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
-  };
-
-  const toggleBookmark = () => {
-    setIsBookmarked((prev) => !prev);
   };
 
   const handleZoomIn = () => {
@@ -165,9 +160,6 @@ export default function ArticleDetails() {
                   <Label className="text-xs text-gray-500">Verified Author</Label>
                 </View>
               </View>
-              <TouchableOpacity className="bg-[#8B0000] px-4 py-1.5 rounded-full">
-                <Label className="text-white text-xs font-bold">Follow</Label>
-              </TouchableOpacity>
             </View>
 
             {/* Actions Row */}
@@ -181,9 +173,6 @@ export default function ArticleDetails() {
                   <Label className="text-xs text-gray-500 ml-1 font-bold">
                     {commentsList.length}
                   </Label>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={toggleBookmark} activeOpacity={0.7} className="p-1">
-                  <Bookmark size={20} color={isBookmarked ? '#E11D48' : '#6B7280'} fill={isBookmarked ? '#E11D48' : 'none'} />
                 </TouchableOpacity>
               </View>
 
@@ -234,9 +223,6 @@ export default function ArticleDetails() {
                 <Headline className="text-sm text-gray-800">Applaud Article</Headline>
               </TouchableOpacity>
               <View className="flex-row items-center gap-3">
-                <TouchableOpacity onPress={toggleBookmark} activeOpacity={0.7} className="w-10 h-10 rounded-full bg-gray-50 items-center justify-center border border-gray-100">
-                  <Bookmark size={18} color={isBookmarked ? '#E11D48' : '#6B7280'} fill={isBookmarked ? '#E11D48' : 'none'} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={handleShare} activeOpacity={0.7} className="w-10 h-10 rounded-full bg-gray-50 items-center justify-center border border-gray-100">
                   <Download size={18} color="#6B7280" />
                 </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ArrowDown, Bookmark, Clock, Sparkles } from 'lucide-react-native';
+import { ArrowDown, Clock, Sparkles } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
 import { useCategoryArticles } from '../../hooks/useCategoryArticles';
@@ -152,9 +152,6 @@ export function InfiniteArticlesFeed({
               >
                 <View className="flex-row justify-between items-start mb-2">
                   <Badge label={category.toUpperCase()} variant="blue" className="rounded-md" />
-                  <TouchableOpacity>
-                    <Bookmark size={20} color="#6B7280" />
-                  </TouchableOpacity>
                 </View>
 
                 <View className="flex-row justify-between">

@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Bold,
-  Bookmark,
   Camera,
   Check,
   ChevronDown,
@@ -192,9 +191,6 @@ export default function CreateArticleScreen() {
         </View>
 
         <View className="flex-row items-center gap-4">
-          <TouchableOpacity>
-            <Bookmark color="#4B5563" size={20} />
-          </TouchableOpacity>
           <TouchableOpacity>
             <Share2 color="#4B5563" size={20} />
           </TouchableOpacity>

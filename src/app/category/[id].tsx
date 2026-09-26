@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Activity, ArrowDown, ArrowLeft, Bookmark, Clock, SlidersHorizontal, Sparkles } from 'lucide-react-native';
+import { Activity, ArrowDown, ArrowLeft, Clock, SlidersHorizontal, Sparkles } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -140,9 +140,6 @@ export default function CategoryDetails() {
                 </Label>
               </View>
             </View>
-            <TouchableOpacity className="bg-[#8B0000] px-4 py-2 rounded-full">
-              <Label className="text-white text-xs font-bold">Follow Track</Label>
-            </TouchableOpacity>
           </View>
 
           {/* Subcategory Chips: Triggers GET /articles/?subcat2_id=X&page=1 on click */}
@@ -253,9 +250,6 @@ export default function CategoryDetails() {
                 >
                   <View className="flex-row justify-between items-start mb-2">
                     <Badge label={catLabel.toUpperCase()} variant="blue" className="rounded-md" />
-                    <TouchableOpacity>
-                      <Bookmark size={20} color="#6B7280" />
-                    </TouchableOpacity>
                   </View>
 
                   <View className="flex-row justify-between">
