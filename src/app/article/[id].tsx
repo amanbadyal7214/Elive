@@ -133,12 +133,13 @@ export default function ArticleDetails() {
 
             <View className="flex-row items-center mb-4">
               <Label className="text-xs text-gray-500">{dateStr}</Label>
-              <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
-              <Clock size={12} color="#6B7280" className="mr-1" />
-              <Label className="text-xs text-gray-500">5 min read</Label>
-              <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
-              <Eye size={12} color="#6B7280" className="mr-1" />
-              <Label className="text-xs text-gray-500">12.5k views</Label>
+              {(apiArticle?.views || apiArticle?.views_count) ? (
+                <>
+                  <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
+                  <Eye size={12} color="#6B7280" className="mr-1" />
+                  <Label className="text-xs text-gray-500">{apiArticle.views || apiArticle.views_count} views</Label>
+                </>
+              ) : null}
             </View>
 
             {/* Headline */}

@@ -286,7 +286,6 @@ export default function ExploreScreen() {
                       <View className="flex-1 pr-4 justify-between">
                         <View className="flex-row items-center mb-2 gap-2 flex-wrap">
                           <Badge label={catName.toUpperCase()} variant="blue" className="rounded-md" />
-                          <Label className="text-[11px] text-gray-500">3 min read</Label>
                         </View>
                         <Headline className="text-lg leading-tight mb-2 text-gray-900" numberOfLines={2}>
                           {title}

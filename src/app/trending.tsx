@@ -241,12 +241,14 @@ export default function TrendingScreen() {
                       </View>
 
                       <View className="flex-row items-center gap-4">
-                        <View className="flex-row items-center gap-1">
-                          <Eye color="#6B7280" size={14} />
-                          <Label className="text-xs text-gray-600 font-medium">
-                            {item.views || item.views_count || '1.8k'}
-                          </Label>
-                        </View>
+                          {(item.views || item.views_count) ? (
+                            <View className="flex-row items-center gap-1">
+                              <Eye color="#6B7280" size={14} />
+                              <Label className="text-xs text-gray-600 font-medium">
+                                {item.views || item.views_count}
+                              </Label>
+                            </View>
+                          ) : null}
 
                         <TouchableOpacity onPress={() => handleShareArticle(item)} className="p-1">
                           <Share2 color="#6B7280" size={16} />

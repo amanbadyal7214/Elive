@@ -265,11 +265,6 @@ export default function CategoryDetails() {
                         <Label className="text-xs text-gray-700 font-medium">{author}</Label>
                         <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
                         <Label className="text-[11px] text-gray-500">{date}</Label>
-                        <View className="flex-1" />
-                        <View className="flex-row items-center">
-                          <Clock size={12} color="#002249" className="mr-1" />
-                          <Label className="text-[11px] font-bold text-primary">3 min read</Label>
-                        </View>
                       </View>
                     </View>
 
