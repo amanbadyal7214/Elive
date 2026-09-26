@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ArrowLeft, Clock, Download, Eye, MessageCircle, Share2, ThumbsUp } from 'lucide-react-native';
-import React, { useState, useEffect, useRef } from 'react';
+import { ArrowLeft, Download, Eye, MessageCircle, Share2, ThumbsUp } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, Share, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../../components/home/Header';

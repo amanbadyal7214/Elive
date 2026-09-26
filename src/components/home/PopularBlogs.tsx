@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { AlignLeft, Heart, MessageCircle, Share2 } from 'lucide-react-native';
-import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { AlignLeft, MessageCircle, Share2, ThumbsDown, ThumbsUp } from 'lucide-react-native';
+import { ActivityIndicator, Image, ScrollView, Share, TouchableOpacity, View } from 'react-native';
 import useHome from '../../hooks/useHome';
 import { Body, Headline, Label } from '../ui/Typography';
 
@@ -96,19 +96,31 @@ export function PopularBlogs() {
           bgColor: 'bg-blue-100 text-blue-700',
           title: formatTitle(item),
           excerpt: cleanExcerpt(item),
-          likes: item.likes || 120,
+          likes: item.likes || item.likes_count || 120,
           comments: Array.isArray(item.comments) ? item.comments.length : (item.commentsCount || 0),
           image: formatImage(item),
         };
       })
     : fallbackBlogs;
 
+  const handleShareBlog = async (e: any, blogTitle: string) => {
+    e.stopPropagation();
+    try {
+      await Share.share({
+        title: blogTitle,
+        message: `${blogTitle}\n\nRead more on Elive!`,
+      });
+    } catch (err) {
+      console.error('Share error:', err);
+    }
+  };
+
   return (
     <View className="py-6 bg-gray-50">
       <View className="px-4 flex-row items-center justify-between mb-6">
         <View className="flex-row items-center">
           <AlignLeft color="#2E7D32" size={20} className="mr-2" />
-          <Headline className="text-xl">Popular Blogs</Headline>
+          <Headline className="text-xl"> Popular Blogs</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/popular-blogs')} activeOpacity={0.7}>
           <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Community Voices {'>'}</Label>
@@ -157,22 +169,46 @@ export function PopularBlogs() {
                 {blog.excerpt}
               </Body>
 
-              {/* Footer Stats */}
-              <View className="flex-row items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                <TouchableOpacity className="flex-row items-center">
-                  <Heart size={16} color="#6B7280" className="mr-1.5" />
-                  <Label className="text-xs text-gray-500">{blog.likes}</Label>
-                </TouchableOpacity>
-
-                <View className="flex-row items-center space-x-4">
-                  <TouchableOpacity className="flex-row items-center">
-                    <MessageCircle size={16} color="#6B7280" className="mr-1.5" />
-                    <Label className="text-xs text-gray-500">{blog.comments}</Label>
+              {/* Footer Actions Row: Left (Like, Dislike, Comment) & Right (Share) */}
+              <View className="flex-row items-center justify-between mt-auto pt-3 border-t border-gray-100">
+                {/* Left Side: Like, Dislike & Comment */}
+                <View className="flex-row items-center gap-2">
+                  <TouchableOpacity
+                    onPress={(e) => e.stopPropagation()}
+                    activeOpacity={0.7}
+                    className="flex-row items-center gap-1 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100"
+                  >
+                    <ThumbsUp size={13} color="#002249" />
+                    <Label className="text-[11px] font-bold text-gray-700">{blog.likes}</Label>
                   </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Share2 size={16} color="#6B7280" />
+
+                  <TouchableOpacity
+                    onPress={(e) => e.stopPropagation()}
+                    activeOpacity={0.7}
+                    className="flex-row items-center gap-1 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100"
+                  >
+                    <ThumbsDown size={13} color="#6B7280" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={(e) => e.stopPropagation()}
+                    activeOpacity={0.7}
+                    className="flex-row items-center gap-1 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100"
+                  >
+                    <MessageCircle size={13} color="#6B7280" />
+                    <Label className="text-[11px] font-bold text-gray-700">{blog.comments}</Label>
                   </TouchableOpacity>
                 </View>
+
+                {/* Right Side: Share Option */}
+                <TouchableOpacity
+                  onPress={(e) => handleShareBlog(e, blog.title)}
+                  activeOpacity={0.8}
+                  className="flex-row items-center gap-1 bg-[#002249] px-3 py-1.5 rounded-full shadow-sm"
+                >
+                  <Share2 size={12} color="white" />
+                  <Label className="text-[11px] font-bold text-white">Share</Label>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           ))}

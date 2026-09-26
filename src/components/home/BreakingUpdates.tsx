@@ -91,7 +91,7 @@ export function BreakingUpdates() {
       <View className="px-4 flex-row items-center justify-between mb-4">
         <View className="flex-row items-center">
           <View className="w-2 h-2 rounded-full bg-primary mr-2" />
-          <Headline className="text-lg">Breaking Updates</Headline>
+          <Headline className="text-lg"> Breaking Updates</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/live-desk')} activeOpacity={0.7}>
           <Label className="text-[10px] font-bold text-primary uppercase tracking-widest">Live Desk {'>'}</Label>

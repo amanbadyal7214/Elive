@@ -106,7 +106,7 @@ export function NewArticles() {
       <View className="flex-row items-center justify-between mb-6">
         <View className="flex-row items-center">
           <LayoutGrid color="#1B365D" size={20} className="mr-2" />
-          <Headline className="text-xl">New Articles</Headline>
+          <Headline className="text-xl"> New Articles</Headline>
         </View>
         <TouchableOpacity onPress={() => router.push('/category/new-articles')} activeOpacity={0.7}>
           <Label className="text-[10px] font-bold text-primary uppercase tracking-widest flex-row items-center">

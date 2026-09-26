@@ -15,7 +15,7 @@ export function NewsletterSignup() {
           <Badge label="WEEKLY CURATED" variant="primary" icon={<Mail size={12} color="white" />} />
         </View>
 
-        <Headline className="text-white text-2xl mb-3">eLiveToday Digest</Headline>
+        <Headline className="text-white text-2xl mb-3"> eLiveToday Digest</Headline>
         
         <Body className="text-gray-300 text-sm mb-6 leading-relaxed">
           The 7 most transformative essays, investigative scoops, and thought pieces delivered to your inbox every Sunday morning. No spam, ever.
