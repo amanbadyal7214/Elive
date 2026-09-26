@@ -12,67 +12,140 @@ import {
   Italic,
   Link as LinkIcon,
   List,
-  Plus,
   Quote,
   Share2,
   Sparkles,
-  Upload
+  Upload,
 } from 'lucide-react-native';
-import { useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
 import { Body, Headline, Label } from '../components/ui/Typography';
-
-const categories = [
-  'Career & Skills',
-  'Current Affairs',
-  'Technology & AI',
-  'Entertainment & Arts',
-  'Spiritual & Mindset',
-];
+import { Category, SubCategory1, SubCategory2, useCategories } from '../hooks/useCategories';
+import { useCreateArticle } from '../hooks/useCreateArticle';
 
 export default function CreateArticleScreen() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
-  const [content, setContent] = useState(
-    'The shifting dynamics of professional growth demand more than routine adherence to established playbooks. As automated systems quietly assume operational weight, the primary differentiator shifts decisively toward editorial discernment, nuanced problem framing, and original synthesis.'
-  );
-  const [selectedCategory, setSelectedCategory] = useState('Career & Skills');
+  const [content, setContent] = useState('');
+
+  // Dynamic Categories from API
+  const { categories, loading: loadingCategories } = useCategories();
+  const { createArticle, loading: submitting, error: submitError, success: submitSuccess } = useCreateArticle();
+
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedSub1, setSelectedSub1] = useState<SubCategory1 | null>(null);
+  const [selectedSub2, setSelectedSub2] = useState<SubCategory2 | null>(null);
+
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>(['Tech Trends']);
-  const [isPublished, setIsPublished] = useState(false);
+  const [showSub1Dropdown, setShowSub1Dropdown] = useState(false);
+  const [showSub2Dropdown, setShowSub2Dropdown] = useState(false);
 
-  const availableTags = ['Tech Trends', 'Productivity', 'Leadership'];
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [status, setStatus] = useState<'Draft' | 'Published'>('Published');
 
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter(t => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
+  // Initialize selected category when categories load
+  useEffect(() => {
+    if (categories && categories.length > 0 && !selectedCategory) {
+      const firstCat = categories[0];
+      setSelectedCategory(firstCat);
+      if (firstCat.subcategories_1 && firstCat.subcategories_1.length > 0) {
+        const firstSub1 = firstCat.subcategories_1[0];
+        setSelectedSub1(firstSub1);
+        if (firstSub1.subcategories_2 && firstSub1.subcategories_2.length > 0) {
+          setSelectedSub2(firstSub1.subcategories_2[0]);
+        }
+      }
     }
+  }, [categories, selectedCategory]);
+
+  const handleSelectCategory = (cat: Category) => {
+    setSelectedCategory(cat);
+    setShowCategoryDropdown(false);
+
+    // Reset subcategories
+    if (cat.subcategories_1 && cat.subcategories_1.length > 0) {
+      const firstSub1 = cat.subcategories_1[0];
+      setSelectedSub1(firstSub1);
+      if (firstSub1.subcategories_2 && firstSub1.subcategories_2.length > 0) {
+        setSelectedSub2(firstSub1.subcategories_2[0]);
+      } else {
+        setSelectedSub2(null);
+      }
+    } else {
+      setSelectedSub1(null);
+      setSelectedSub2(null);
+    }
+  };
+
+  const handleSelectSub1 = (sub1: SubCategory1) => {
+    setSelectedSub1(sub1);
+    setShowSub1Dropdown(false);
+    if (sub1.subcategories_2 && sub1.subcategories_2.length > 0) {
+      setSelectedSub2(sub1.subcategories_2[0]);
+    } else {
+      setSelectedSub2(null);
+    }
+  };
+
+  const handleSelectSub2 = (sub2: SubCategory2) => {
+    setSelectedSub2(sub2);
+    setShowSub2Dropdown(false);
   };
 
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const readTime = Math.ceil(wordCount / 200) || 1;
 
-  const handlePublish = () => {
-    setIsPublished(true);
-    setTimeout(() => {
-      router.push('/');
-    }, 1500);
+  const handlePublishOrDraft = async (postStatus: 'Draft' | 'Published') => {
+    if (!title.trim()) {
+      alert('Please enter a story title');
+      return;
+    }
+
+    try {
+      setStatus(postStatus);
+      await createArticle({
+        post_title: title.trim(),
+        content: content.trim(),
+        category_id: selectedCategory ? selectedCategory.id : 1,
+        subcategory_1_id: selectedSub1 ? selectedSub1.id : undefined,
+        subcategory_2_id: selectedSub2 ? selectedSub2.id : undefined,
+        status: postStatus,
+        image: imageUri || 'article.jpg',
+      });
+
+      setTimeout(() => {
+        router.push('/');
+      }, 1500);
+    } catch (err: any) {
+      console.error('[CreateArticle] Error publishing:', err);
+    }
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
-
       {/* Top Header Bar */}
       <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
         <View className="flex-row items-center gap-3">
-          <TouchableOpacity onPress={() => currentStep > 1 ? setCurrentStep((currentStep - 1) as any) : router.back()} className="p-1">
+          <TouchableOpacity
+            onPress={() =>
+              currentStep > 1 ? setCurrentStep((currentStep - 1) as any) : router.back()
+            }
+            className="p-1"
+          >
             <ArrowLeft color="#121417" size={22} />
           </TouchableOpacity>
 
@@ -100,28 +173,52 @@ export default function CreateArticleScreen() {
       <View className="bg-[#F8F9FA] px-4 py-3 border-b border-gray-100">
         <View className="flex-row items-center justify-between mb-2">
           <TouchableOpacity onPress={() => setCurrentStep(1)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 1 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
-              <Label className={`text-xs font-bold ${currentStep >= 1 ? 'text-white' : 'text-gray-600'}`}>1</Label>
+            <View
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
+                currentStep >= 1 ? 'bg-[#002249]' : 'bg-gray-200'
+              }`}
+            >
+              <Label className={`text-xs font-bold ${currentStep >= 1 ? 'text-white' : 'text-gray-600'}`}>
+                1
+              </Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 1 ? 'text-[#002249]' : 'text-gray-500'}`}>Details</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 1 ? 'text-[#002249]' : 'text-gray-500'}`}>
+              Details
+            </Label>
           </TouchableOpacity>
 
           <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'}`} />
 
           <TouchableOpacity onPress={() => setCurrentStep(2)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
-              <Label className={`text-xs font-bold ${currentStep >= 2 ? 'text-white' : 'text-gray-600'}`}>2</Label>
+            <View
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
+                currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'
+              }`}
+            >
+              <Label className={`text-xs font-bold ${currentStep >= 2 ? 'text-white' : 'text-gray-600'}`}>
+                2
+              </Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 2 ? 'text-[#002249]' : 'text-gray-500'}`}>Write</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 2 ? 'text-[#002249]' : 'text-gray-500'}`}>
+              Write
+            </Label>
           </TouchableOpacity>
 
           <View className={`flex-1 h-0.5 -mt-4 ${currentStep >= 3 ? 'bg-[#002249]' : 'bg-gray-200'}`} />
 
           <TouchableOpacity onPress={() => setCurrentStep(3)} className="flex-1 items-center">
-            <View className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep === 3 ? 'bg-[#002249]' : 'bg-gray-200'}`}>
-              <Label className={`text-xs font-bold ${currentStep === 3 ? 'text-white' : 'text-gray-600'}`}>3</Label>
+            <View
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
+                currentStep === 3 ? 'bg-[#002249]' : 'bg-gray-200'
+              }`}
+            >
+              <Label className={`text-xs font-bold ${currentStep === 3 ? 'text-white' : 'text-gray-600'}`}>
+                3
+              </Label>
             </View>
-            <Label className={`text-[10px] font-bold ${currentStep === 3 ? 'text-[#002249]' : 'text-gray-500'}`}>Preview</Label>
+            <Label className={`text-[10px] font-bold ${currentStep === 3 ? 'text-[#002249]' : 'text-gray-500'}`}>
+              Preview
+            </Label>
           </TouchableOpacity>
         </View>
       </View>
@@ -132,10 +229,7 @@ export default function CreateArticleScreen() {
           <Label className="text-sm font-bold text-gray-600">Cancel</Label>
         </TouchableOpacity>
 
-        <View className="flex-row items-center gap-1.5">
-          <Cloud color="#10B981" size={16} />
-          <Label className="text-xs text-gray-500 font-medium">Draft saved 1m ago</Label>
-        </View>
+        
 
         {currentStep < 3 ? (
           <TouchableOpacity
@@ -150,29 +244,47 @@ export default function CreateArticleScreen() {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={handlePublish}
+            disabled={submitting}
+            onPress={() => handlePublishOrDraft('Published')}
             className="bg-[#002249] flex-row items-center px-4 py-2 rounded-full shadow-sm"
             activeOpacity={0.9}
           >
-            <Label className="text-white font-bold text-xs mr-1">
-              {isPublished ? 'Publishing...' : 'Publish Article'}
-            </Label>
-            <Sparkles color="white" size={14} />
+            {submitting ? (
+              <ActivityIndicator size="small" color="#FFFFFF" className="mr-2" />
+            ) : (
+              <>
+                <Label className="text-white font-bold text-xs mr-1">
+                  {submitSuccess ? 'Published! ✓' : 'Publish Article'}
+                </Label>
+                <Sparkles color="white" size={14} />
+              </>
+            )}
           </TouchableOpacity>
         )}
       </View>
 
       {/* Step Content */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        className="flex-1"
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
         <ScrollView
           className="flex-1 px-4 pt-4"
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: 40 }}
         >
+          {submitError && (
+            <View className="bg-red-50 p-4 rounded-xl border border-red-200 mb-4">
+              <Label className="text-xs font-bold text-red-700">{submitError}</Label>
+            </View>
+          )}
+
+          {submitSuccess && (
+            <View className="bg-emerald-50 p-4 rounded-xl border border-emerald-200 mb-4 flex-row items-center">
+              <Sparkles size={18} color="#059669" className="mr-2" />
+              <Label className="text-xs font-bold text-emerald-800">
+                Article posted successfully! Redirecting...
+              </Label>
+            </View>
+          )}
 
           {/* STEP 1: Metadata & Details */}
           {currentStep === 1 && (
@@ -188,14 +300,21 @@ export default function CreateArticleScreen() {
                 <Label className="text-xs text-gray-500 text-center mb-4 max-w-[280px]">
                   JPEG, WebP or PNG • 16:9 ratio recommended (min 1400px wide)
                 </Label>
-                <TouchableOpacity className="flex-row items-center bg-white px-5 py-2.5 rounded-full border border-gray-200 shadow-sm">
+                <TouchableOpacity
+                  onPress={() => setImageUri('https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=800&q=80')}
+                  className="flex-row items-center bg-white px-5 py-2.5 rounded-full border border-gray-200 shadow-sm"
+                >
                   <Upload color="#374151" size={16} className="mr-2" />
-                  <Label className="text-xs font-bold text-gray-800">Upload Image</Label>
+                  <Label className="text-xs font-bold text-gray-800">
+                    {imageUri ? 'Cover Attached ✓' : 'Upload Image'}
+                  </Label>
                 </TouchableOpacity>
               </View>
 
               {/* Title Input */}
-              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Story Title</Label>
+              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
+                Story Title *
+              </Label>
               <TextInput
                 className="text-2xl font-serif font-bold text-[#002249] mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100"
                 placeholder="Title of your story or analysis..."
@@ -206,7 +325,9 @@ export default function CreateArticleScreen() {
               />
 
               {/* Subtitle Input */}
-              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Subtitle / Summary</Label>
+              <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
+                Subtitle / Summary
+              </Label>
               <TextInput
                 className="text-base font-serif text-gray-800 mb-6 p-4 bg-gray-50 rounded-2xl border border-gray-100"
                 placeholder="Write a captivating subtitle or brief summary..."
@@ -216,24 +337,27 @@ export default function CreateArticleScreen() {
                 multiline
               />
 
-              {/* Editorial Desk & Topics Box */}
+              {/* Editorial Desk & Hierarchical Category Selectors */}
               <View className="bg-[#F8F9FA] rounded-2xl p-4 border border-gray-100 mb-6">
-                <View className="flex-row items-center justify-between mb-3">
+                <View className="flex-row items-center justify-between mb-4">
                   <Label className="text-[10px] font-bold text-gray-700 uppercase tracking-widest">
-                    Editorial Desk & Topics
+                    Category Hierarchy Selection
                   </Label>
                   <Label className="text-[10px] font-bold text-[#002249] uppercase tracking-widest">
                     Required
                   </Label>
                 </View>
 
-                {/* Category Dropdown Selector */}
-                <View className="relative mb-3">
+                {/* 1. Category Dropdown (category_id) */}
+                <Label className="text-[11px] font-bold text-gray-600 mb-1">Main Category</Label>
+                <View className="relative mb-4">
                   <TouchableOpacity
                     onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                    className="flex-row items-center justify-between bg-white px-4 py-2.5 rounded-full border border-gray-200 self-start"
+                    className="flex-row items-center justify-between bg-white px-4 py-3 rounded-xl border border-gray-200"
                   >
-                    <Label className="text-xs font-bold text-gray-900 mr-2">{selectedCategory}</Label>
+                    <Label className="text-xs font-bold text-gray-900">
+                      {selectedCategory ? selectedCategory.name : 'Select Category'}
+                    </Label>
                     <ChevronDown color="#6B7280" size={16} />
                   </TouchableOpacity>
 
@@ -241,43 +365,87 @@ export default function CreateArticleScreen() {
                     <View className="bg-white rounded-xl border border-gray-200 shadow-lg mt-1 p-1 z-10">
                       {categories.map((cat) => (
                         <TouchableOpacity
-                          key={cat}
-                          onPress={() => { setSelectedCategory(cat); setShowCategoryDropdown(false); }}
-                          className="px-3 py-2 rounded-lg hover:bg-gray-50 flex-row items-center justify-between"
+                          key={cat.id}
+                          onPress={() => handleSelectCategory(cat)}
+                          className="px-3 py-2.5 rounded-lg flex-row items-center justify-between"
                         >
-                          <Label className="text-xs font-medium text-gray-800">{cat}</Label>
-                          {selectedCategory === cat && <Check color="#002249" size={14} />}
+                          <Label className="text-xs font-medium text-gray-800">{cat.name}</Label>
+                          {selectedCategory?.id === cat.id && <Check color="#002249" size={14} />}
                         </TouchableOpacity>
                       ))}
                     </View>
                   )}
                 </View>
 
-                {/* Tags Row */}
-                <View className="flex-row flex-wrap items-center gap-2">
-                  {availableTags.map((tag) => {
-                    const isSelected = selectedTags.includes(tag);
-                    return (
+                {/* 2. Subcategory 1 Dropdown (subcategory_1_id) */}
+                {selectedCategory?.subcategories_1 && selectedCategory.subcategories_1.length > 0 && (
+                  <>
+                    <Label className="text-[11px] font-bold text-gray-600 mb-1">
+                      Subcategory Level 1 
+                    </Label>
+                    <View className="relative mb-4">
                       <TouchableOpacity
-                        key={tag}
-                        onPress={() => toggleTag(tag)}
-                        className={`flex-row items-center px-3.5 py-1.5 rounded-full border ${isSelected
-                          ? 'bg-[#3B4A6B] border-[#3B4A6B]'
-                          : 'bg-white border-gray-200'
-                          }`}
+                        onPress={() => setShowSub1Dropdown(!showSub1Dropdown)}
+                        className="flex-row items-center justify-between bg-white px-4 py-3 rounded-xl border border-gray-200"
                       >
-                        <Label className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-700'}`}>
-                          {tag} {isSelected && '✓'}
+                        <Label className="text-xs font-bold text-gray-900">
+                          {selectedSub1 ? selectedSub1.name : 'Select Subcategory 1'}
                         </Label>
+                        <ChevronDown color="#6B7280" size={16} />
                       </TouchableOpacity>
-                    );
-                  })}
 
-                  <TouchableOpacity className="flex-row items-center bg-white px-3 py-1.5 rounded-full border border-gray-200">
-                    <Plus color="#4B5563" size={14} className="mr-1" />
-                    <Label className="text-xs font-bold text-gray-700">Tag</Label>
-                  </TouchableOpacity>
-                </View>
+                      {showSub1Dropdown && (
+                        <View className="bg-white rounded-xl border border-gray-200 shadow-lg mt-1 p-1 z-10">
+                          {selectedCategory.subcategories_1.map((sub1) => (
+                            <TouchableOpacity
+                              key={sub1.id}
+                              onPress={() => handleSelectSub1(sub1)}
+                              className="px-3 py-2.5 rounded-lg flex-row items-center justify-between"
+                            >
+                              <Label className="text-xs font-medium text-gray-800">{sub1.name}</Label>
+                              {selectedSub1?.id === sub1.id && <Check color="#002249" size={14} />}
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  </>
+                )}
+
+                {/* 3. Subcategory 2 Dropdown (subcategory_2_id) */}
+                {selectedSub1?.subcategories_2 && selectedSub1.subcategories_2.length > 0 && (
+                  <>
+                    <Label className="text-[11px] font-bold text-gray-600 mb-1">
+                      Subcategory Level 2
+                    </Label>
+                    <View className="relative mb-2">
+                      <TouchableOpacity
+                        onPress={() => setShowSub2Dropdown(!showSub2Dropdown)}
+                        className="flex-row items-center justify-between bg-white px-4 py-3 rounded-xl border border-gray-200"
+                      >
+                        <Label className="text-xs font-bold text-gray-900">
+                          {selectedSub2 ? selectedSub2.name : 'Select Subcategory 2'}
+                        </Label>
+                        <ChevronDown color="#6B7280" size={16} />
+                      </TouchableOpacity>
+
+                      {showSub2Dropdown && (
+                        <View className="bg-white rounded-xl border border-gray-200 shadow-lg mt-1 p-1 z-10">
+                          {selectedSub1.subcategories_2.map((sub2) => (
+                            <TouchableOpacity
+                              key={sub2.id}
+                              onPress={() => handleSelectSub2(sub2)}
+                              className="px-3 py-2.5 rounded-lg flex-row items-center justify-between"
+                            >
+                              <Label className="text-xs font-medium text-gray-800">{sub2.name}</Label>
+                              {selectedSub2?.id === sub2.id && <Check color="#002249" size={14} />}
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  </>
+                )}
               </View>
 
               {/* Step 1 Next Button */}
@@ -295,7 +463,9 @@ export default function CreateArticleScreen() {
           {currentStep === 2 && (
             <View>
               <View className="flex-row items-center justify-between mb-4">
-                <Label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Main Article Body</Label>
+                <Label className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                  Main Article Body
+                </Label>
                 <Label className="text-xs font-medium text-emerald-600">Auto-saved</Label>
               </View>
 
@@ -304,9 +474,7 @@ export default function CreateArticleScreen() {
                 {title || 'Untitled Story'}
               </Headline>
               {subtitle.length > 0 && (
-                <Label className="text-sm font-serif text-gray-600 mb-4 italic">
-                  {subtitle}
-                </Label>
+                <Label className="text-sm font-serif text-gray-600 mb-4 italic">{subtitle}</Label>
               )}
 
               {/* Article Main Body Input */}
@@ -346,15 +514,29 @@ export default function CreateArticleScreen() {
               <View className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-6 flex-row items-center">
                 <Sparkles color="#059669" size={20} className="mr-3" />
                 <View className="flex-1">
-                  <Headline className="text-sm font-bold text-emerald-900 mb-0.5">Ready for publication</Headline>
-                  <Label className="text-xs text-emerald-700">Review how your story will look to eLiveToday readers.</Label>
+                  <Headline className="text-sm font-bold text-emerald-900 mb-0.5">
+                    Ready for publication
+                  </Headline>
+                  <Label className="text-xs text-emerald-700">
+                    Review how your story will look to eLiveToday readers.
+                  </Label>
                 </View>
               </View>
 
               {/* Article Preview Card */}
               <View className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm mb-6">
-                <View className="flex-row items-center gap-2 mb-3">
-                  <Badge label={selectedCategory.toUpperCase()} variant="red" className="rounded-md" />
+                <View className="flex-row items-center gap-2 mb-3 flex-wrap">
+                  <Badge
+                    label={(selectedCategory?.name || 'GENERAL').toUpperCase()}
+                    variant="red"
+                    className="rounded-md"
+                  />
+                  {selectedSub1 && (
+                    <Badge label={selectedSub1.name.toUpperCase()} variant="blue" className="rounded-md" />
+                  )}
+                  {selectedSub2 && (
+                    <Badge label={selectedSub2.name.toUpperCase()} variant="green" className="rounded-md" />
+                  )}
                   <Label className="text-xs text-gray-500">{readTime} min read</Label>
                 </View>
 
@@ -369,7 +551,11 @@ export default function CreateArticleScreen() {
                 )}
 
                 <View className="flex-row items-center mb-6 pt-2 border-t border-gray-100">
-                  <Avatar src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" size={36} className="mr-3" />
+                  <Avatar
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"
+                    size={36}
+                    className="mr-3"
+                  />
                   <View>
                     <Label className="text-sm font-bold text-gray-900">Sarah Jenkins</Label>
                     <Label className="text-xs text-gray-500">Staff Writer • Today</Label>
@@ -377,9 +563,7 @@ export default function CreateArticleScreen() {
                 </View>
 
                 {/* Preview snippet */}
-                <Body className="text-sm text-gray-700 leading-relaxed font-serif">
-                  {content}
-                </Body>
+                <Body className="text-sm text-gray-700 leading-relaxed font-serif">{content}</Body>
               </View>
 
               {/* Navigation & Publish */}
@@ -392,18 +576,24 @@ export default function CreateArticleScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={handlePublish}
+                  disabled={submitting}
+                  onPress={() => handlePublishOrDraft('Published')}
                   className="flex-1 bg-[#002249] py-4 rounded-xl items-center justify-center flex-row shadow-md"
                 >
-                  <Label className="text-white font-bold text-base mr-2">
-                    {isPublished ? 'Published! ✓' : 'Publish Story'}
-                  </Label>
-                  {!isPublished && <ArrowRight color="white" size={18} />}
+                  {submitting ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" className="mr-2" />
+                  ) : (
+                    <>
+                      <Label className="text-white font-bold text-base mr-2">
+                        {submitSuccess ? 'Published! ✓' : 'Publish Story'}
+                      </Label>
+                      {!submitSuccess && <ArrowRight color="white" size={18} />}
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
           )}
-
         </ScrollView>
 
         {/* STEP 2 Formatting Toolbar */}
@@ -443,8 +633,6 @@ export default function CreateArticleScreen() {
           </View>
         )}
       </KeyboardAvoidingView>
-
     </SafeAreaView>
   );
 }
-

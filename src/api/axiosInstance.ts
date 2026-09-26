@@ -4,7 +4,7 @@ export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.9:5
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 25000, // 25 seconds timeout to allow backend cold starts and network latency
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -14,11 +14,6 @@ const axiosInstance = axios.create({
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // You can attach authorization tokens here if needed
-    // const token = await AsyncStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
     return config;
   },
   (error) => {
@@ -30,11 +25,13 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle global API errors (e.g. 401 Unauthorized, Network Error, etc.)
+    // Handle global API errors (e.g. 401 Unauthorized, Network Error, Timeout, etc.)
     if (error.response) {
       console.error(`[API Error ${error.response.status}]:`, error.response.data);
+    } else if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      console.warn(`[API Timeout Warning]: Request to ${error.config?.url} timed out. Ensure backend server at ${BASE_URL} is running and reachable.`);
     } else if (error.request) {
-      console.error('[API Network Error]: No response received', error.request);
+      console.error('[API Network Error]: No response received from server at', BASE_URL);
     } else {
       console.error('[API Request Error]:', error.message);
     }
