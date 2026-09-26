@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import {
   ArrowLeft,
   ArrowRight,
@@ -54,7 +55,38 @@ export default function CreateArticleScreen() {
   const [showSub2Dropdown, setShowSub2Dropdown] = useState(false);
 
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<any>(null);
   const [status, setStatus] = useState<'Draft' | 'Published'>('Published');
+
+  const handlePickCoverImage = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access media library is required to pick a cover image');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const fileObj = {
+          uri: asset.uri,
+          name: asset.fileName || 'cover.jpg',
+          type: asset.mimeType || 'image/jpeg',
+        };
+        setImageUri(asset.uri);
+        setSelectedImageFile(fileObj);
+      }
+    } catch (err) {
+      console.error('[CreateArticle] Error picking image:', err);
+    }
+  };
 
   // Initialize selected category when categories load
   useEffect(() => {
@@ -125,7 +157,7 @@ export default function CreateArticleScreen() {
         subcategory_1_id: selectedSub1 ? selectedSub1.id : undefined,
         subcategory_2_id: selectedSub2 ? selectedSub2.id : undefined,
         status: postStatus,
-        image: imageUri || 'article.jpg',
+        image: selectedImageFile || imageUri || 'article.jpg',
       });
 
       setTimeout(() => {
@@ -288,26 +320,39 @@ export default function CreateArticleScreen() {
           {currentStep === 1 && (
             <View>
               {/* Cover Image Container */}
-              <View className="bg-[#F8F9FA] rounded-2xl p-6 border border-gray-100 items-center justify-center mb-6">
-                <View className="w-12 h-12 rounded-full bg-red-50/80 items-center justify-center mb-3">
-                  <Camera color="#002249" size={22} />
-                </View>
-                <Headline className="text-base text-gray-900 text-center mb-1 font-serif">
-                  Add a high-resolution cover image
-                </Headline>
-                <Label className="text-xs text-gray-500 text-center mb-4 max-w-[280px]">
-                  JPEG, WebP or PNG • 16:9 ratio recommended (min 1400px wide)
-                </Label>
-                <TouchableOpacity
-                  onPress={() => setImageUri('https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=800&q=80')}
-                  className="flex-row items-center bg-white px-5 py-2.5 rounded-full border border-gray-200 shadow-sm"
-                >
-                  <Upload color="#374151" size={16} className="mr-2" />
-                  <Label className="text-xs font-bold text-gray-800">
-                    {imageUri ? 'Cover Attached ✓' : 'Upload Image'}
-                  </Label>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                onPress={handlePickCoverImage}
+                activeOpacity={0.8}
+                className="bg-[#F8F9FA] rounded-2xl border border-gray-200 overflow-hidden mb-6"
+              >
+                {imageUri ? (
+                  <View className="relative w-full h-48">
+                    <Image source={{ uri: imageUri }} className="w-full h-48 bg-gray-200" resizeMode="cover" />
+                    <View className="absolute inset-0 bg-black/30 items-center justify-center">
+                      <View className="flex-row items-center bg-white/90 px-4 py-2 rounded-full shadow-md">
+                        <Camera color="#002249" size={16} className="mr-2" />
+                        <Label className="text-xs font-bold text-gray-900">Change Cover Image</Label>
+                      </View>
+                    </View>
+                  </View>
+                ) : (
+                  <View className="p-6 items-center justify-center">
+                    <View className="w-12 h-12 rounded-full bg-red-50/80 items-center justify-center mb-3">
+                      <Camera color="#002249" size={22} />
+                    </View>
+                    <Headline className="text-base text-gray-900 text-center mb-1 font-serif">
+                      Add a high-resolution cover image
+                    </Headline>
+                    <Label className="text-xs text-gray-500 text-center mb-4 max-w-[280px]">
+                      JPEG, WebP or PNG • 16:9 ratio recommended (min 1400px wide)
+                    </Label>
+                    <View className="flex-row items-center bg-white px-5 py-2.5 rounded-full border border-gray-200 shadow-sm">
+                      <Upload color="#374151" size={16} className="mr-2" />
+                      <Label className="text-xs font-bold text-gray-800">Select Cover Image</Label>
+                    </View>
+                  </View>
+                )}
+              </TouchableOpacity>
 
               {/* Title Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
