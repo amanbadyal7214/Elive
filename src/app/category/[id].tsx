@@ -1,263 +1,102 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Activity, ArrowDown, ArrowLeft, Bookmark, Clock, Flame, Radio, SlidersHorizontal, Sparkles } from 'lucide-react-native';
-import { useState } from 'react';
-import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Activity, ArrowDown, ArrowLeft, Bookmark, Clock, SlidersHorizontal, Sparkles } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../../components/home/BottomNav';
 import { Header } from '../../components/home/Header';
 import { Badge } from '../../components/ui/Badge';
 import { Headline, Label } from '../../components/ui/Typography';
+import { SubCategory2, useCategories } from '../../hooks/useCategories';
+import { useCategoryArticles } from '../../hooks/useCategoryArticles';
+import { Article } from '../../hooks/useHome';
 
-interface SectionConfig {
-  title: string;
-  tag: string;
-  description: string;
-  icon?: any;
-  subFilters: string[];
-  articles: Array<{
-    id: number | string;
-    category: string;
-    badgeVariant: 'blue' | 'red' | 'green' | 'pink' | 'primary' | 'secondary';
-    title: string;
-    excerpt: string;
-    author: string;
-    date: string;
-    readTime: string;
-    image: string;
-  }>;
+function getArticleTitle(article: Article): string {
+  if (article.post_title) return article.post_title;
+  if (typeof article.title === 'string') return article.title;
+  if (article.title && typeof article.title === 'object' && article.title.rendered) return article.title.rendered;
+  if (article.title && typeof article.title === 'object' && article.title.name) return article.title.name;
+  return 'Untitled Story';
 }
 
-const SECTION_DATA: Record<string, SectionConfig> = {
-  'live-desk': {
-    title: 'Live Desk Updates',
-    tag: 'Live Dispatch',
-    description: 'Real-time breaking updates, urgent briefings, and continuous field reporting from our global newsroom.',
-    icon: Radio,
-    subFilters: ['All', 'Breaking', 'Policy', 'Tech Alerts', 'Global Economy'],
-    articles: [
-      {
-        id: 1,
-        category: 'CURRENT AFFAIRS',
-        badgeVariant: 'red',
-        title: 'Global Climate Summit Finalizes Landmark Clean Grid Framework',
-        excerpt: 'Ministers from 45 nations commit to unified cross-border renewable grid protocols and storage guarantees.',
-        author: 'Sarah Jenkins',
-        date: '12m ago',
-        readTime: '4 min read',
-        image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=600&q=80',
-      },
-      {
-        id: 2,
-        category: 'CAREER & SKILLS',
-        badgeVariant: 'blue',
-        title: 'Next-Gen AI Protocols Rewrite the Rules for Modern Tech Teams',
-        excerpt: 'Engineering leads migrate toward localized model inference to eliminate latency and preserve enterprise IP.',
-        author: 'Devon Vance',
-        date: '45m ago',
-        readTime: '6 min read',
-        image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80',
-      },
-      {
-        id: 106,
-        category: 'CURRENT AFFAIRS',
-        badgeVariant: 'red',
-        title: 'Decarbonizing High Seas: How Marine Wind Kites Are Scaling',
-        excerpt: 'Commercial cargo ships deploy automated high-altitude kites to cut bunker fuel consumption by 35%.',
-        author: 'Elena Rostova',
-        date: '2h ago',
-        readTime: '5 min read',
-        image: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=600&q=80',
-      },
-    ],
-  },
-  'editors-pick': {
-    title: "Editor's Selection",
-    tag: 'Featured Picks',
-    description: 'Hand-curated investigative longform stories, architectural deep-dives, and profound cultural essays.',
-    icon: Flame,
-    subFilters: ['All', 'Deep Dives', 'Essays', 'Interviews', 'Special Reports'],
-    articles: [
-      {
-        id: 105,
-        category: 'CAREER & SKILLS',
-        badgeVariant: 'blue',
-        title: 'The Architecture of Asynchronous Decision-Making',
-        excerpt: 'How hyper-effective remote organizations replace sync meetings with high-clarity written proposals.',
-        author: 'Marcus Vance',
-        date: 'May 18, 2025',
-        readTime: '6 min read',
-        image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&q=80',
-      },
-      {
-        id: 107,
-        category: 'SPIRITUAL',
-        badgeVariant: 'green',
-        title: 'Silence as Counter-Culture: Reclaiming Sacred Solitude in Tech',
-        excerpt: 'In an era of hyper-connected notifications, deliberate silence becomes the ultimate cognitive superpower.',
-        author: 'Julian Chen',
-        date: 'May 15, 2025',
-        readTime: '8 min read',
-        image: 'https://images.unsplash.com/photo-1444464666168-49b626428bc5?w=600&q=80',
-      },
-      {
-        id: 108,
-        category: 'CAREER & SKILLS',
-        badgeVariant: 'blue',
-        title: 'Modern Engineering Leadership: From IC to VP Strategy',
-        excerpt: 'Navigating technical growth trajectories without sacrificing hands-on architectural intuition.',
-        author: 'Sophia Martinez',
-        date: 'May 10, 2025',
-        readTime: '7 min read',
-        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80',
-      },
-    ],
-  },
-  'new-articles': {
-    title: 'New Articles Feed',
-    tag: 'Fresh Off The Press',
-    description: 'Explore all the latest published pieces across tech, lifestyle, acoustic design, and culture.',
-    icon: Sparkles,
-    subFilters: ['All', 'Entertainment', 'Spiritual', 'Lifestyle', 'Tech'],
-    articles: [
-      {
-        id: 201,
-        category: 'ENTERTAINMENT',
-        badgeVariant: 'blue',
-        title: 'The Renaissance of Acoustic Architecture in Live Performance',
-        excerpt: 'Architects embrace natural reverberation chambers to redefine digital soundscapes in modern concert halls.',
-        author: 'Clara Oswald',
-        date: 'Oct 24',
-        readTime: '5 min read',
-        image: 'https://images.unsplash.com/photo-1540839045362-a56c2719cb61?w=600&q=80',
-      },
-      {
-        id: 202,
-        category: 'SPIRITUAL',
-        badgeVariant: 'green',
-        title: 'Chronos vs. Kairos: Reclaiming the Soul of Solitude',
-        excerpt: 'Moving from clock-driven productivity to opportunistic depth in daily creative rituals.',
-        author: 'Dr. Aaron Paul',
-        date: 'Oct 23',
-        readTime: '7 min read',
-        image: 'https://images.unsplash.com/photo-1606707764516-7c70560fbd95?w=600&q=80',
-      },
-      {
-        id: 203,
-        category: 'LIFESTYLE',
-        badgeVariant: 'pink',
-        title: 'Craft Economies: Why Gen Z is Choosing Craft Studios',
-        excerpt: 'Tactile creation and physical assembly emerge as counter-narratives to algorithmic feeds.',
-        author: 'Maya Lin',
-        date: 'Oct 22',
-        readTime: '4 min read',
-        image: 'https://images.unsplash.com/photo-1493106819501-66d381c466f1?w=600&q=80',
-      },
-    ],
-  },
-  'popular-blogs': {
-    title: 'Community Voices',
-    tag: 'Popular Blogs',
-    description: 'Dispatches, opinion pieces, and guest columns written by leaders, founders, and creative practitioners.',
-    subFilters: ['All', 'UX Design', 'Macro Strategy', 'Energy Grids', 'Philosophy'],
-    articles: [
-      {
-        id: 301,
-        category: 'UX DESIGN',
-        badgeVariant: 'blue',
-        title: 'Why Frictionless UX Might Be Dumbing Down Our Collective Memory',
-        excerpt: 'When we eliminate every obstacle in digital journeys, we inadvertently strip away active cognitive retention.',
-        author: 'Ananya Roy',
-        date: 'May 19, 2025',
-        readTime: '6 min read',
-        image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80',
-      },
-      {
-        id: 302,
-        category: 'ENERGY GRIDS',
-        badgeVariant: 'pink',
-        title: 'Decentralized Energy Grids: A Dispatch from the Edge',
-        excerpt: 'How a valley community bypassed regional utilities to build a self-sustaining microgrid network.',
-        author: 'Marcus Chen',
-        date: 'May 17, 2025',
-        readTime: '8 min read',
-        image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80',
-      },
-    ],
-  },
-};
+function getArticleExcerpt(article: Article): string {
+  if (article.description) return article.description;
+  if (article.subtitle) return article.subtitle;
+  if (article.content) return article.content.replace(/<[^>]+>/g, '').slice(0, 120) + '...';
+  return 'Read the full story and detailed report.';
+}
 
-const DEFAULT_SECTION: SectionConfig = {
-  title: 'Career & Skills Track',
-  tag: 'Deep Dive Track',
-  description: 'Actionable guides, emerging tech insights, and workplace strategies for modern professionals navigating the intelligent era.',
-  subFilters: ['All', 'New Trends', 'Tech News', 'IT Skills', 'Soft Skills'],
-  articles: [
-    {
-      id: 101,
-      category: 'TECH NEWS',
-      badgeVariant: 'blue',
-      title: 'The 2025 AI Engineer Roadmap: Essential Skills & System Models',
-      excerpt: 'Why high-throughput vector indexing, GPU memory optimization, and evals are essential for senior devs.',
-      author: 'Devon Vance',
-      date: 'May 18, 2025',
-      readTime: '5 min read',
-      image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=80',
-    },
-    {
-      id: 102,
-      category: 'SOFT SKILLS',
-      badgeVariant: 'green',
-      title: 'Mastering Executive Presence in Remote Workplaces',
-      excerpt: 'High-impact asynchronous memos, nuanced cadence control during cross-functional alignment.',
-      author: 'Camille Girard',
-      date: 'May 16, 2025',
-      readTime: '4 min read',
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80',
-    },
-    {
-      id: 103,
-      category: 'IT SKILLS',
-      badgeVariant: 'pink',
-      title: 'Full-Stack Rust in Production: What Teams Need to Know',
-      excerpt: 'From Leptos hydration speeds to cloud container footprints: real architectural benchmarks.',
-      author: 'Nikolai Soren',
-      date: 'May 14, 2025',
-      readTime: '7 min read',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80',
-    },
-    {
-      id: 104,
-      category: 'NEW TRENDS',
-      badgeVariant: 'blue',
-      title: 'Why Micro-Certifications Are Overtaking Traditional Degrees',
-      excerpt: 'Data on credential velocity shows industry sprint badges now command higher hiring priority.',
-      author: 'Alisha Chen',
-      date: 'May 12, 2025',
-      readTime: '6 min read',
-      image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80',
-    },
-  ],
-};
+function getArticleAuthor(article: Article): string {
+  if (typeof article.author === 'string') return article.author;
+  if (article.author && typeof article.author === 'object') {
+    return article.author.full_name || article.author.name || 'Editorial Staff';
+  }
+  return 'Editorial Staff';
+}
+
+function formatImageUrl(raw: any, fallback: string): string {
+  if (typeof raw !== 'string' || !raw.trim()) {
+    return fallback;
+  }
+  if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:')) {
+    return raw;
+  }
+  if (raw.startsWith('/')) {
+    return `http://192.168.1.9:5000${raw}`;
+  }
+  if (raw.startsWith('uploads/')) {
+    return `http://192.168.1.9:5000/${raw}`;
+  }
+  return `http://192.168.1.9:5000/uploads/${raw}`;
+}
+
+function getArticleImage(article: Article): string {
+  const raw = article.image || article.imageUrl || article.coverImage;
+  return formatImageUrl(raw, 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80');
+}
+
+function formatDate(dateStr?: string | null): string {
+  if (!dateStr) return 'Recently';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function CategoryDetails() {
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const [activeSub, setActiveSub] = useState('All');
+  const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
+  const [selectedSubcat2Id, setSelectedSubcat2Id] = useState<number | string | null>(null);
   const [activeSort, setActiveSort] = useState('Latest');
 
-  const paramKey = (id || 'career-&-skills').toString().toLowerCase();
-  const currentSection = SECTION_DATA[paramKey] || {
-    ...DEFAULT_SECTION,
-    title: paramKey.replace(/-/g, ' ').toUpperCase(),
-  };
+  const { categories } = useCategories();
 
-  const filteredArticles = currentSection.articles.filter((article) => {
-    if (activeSub === 'All') return true;
-    return (
-      article.category.toLowerCase().includes(activeSub.toLowerCase()) ||
-      article.title.toLowerCase().includes(activeSub.toLowerCase())
-    );
-  });
+  // Find matching category object from API categories list
+  const matchedCat = categories?.find(
+    (c) => String(c.id) === String(id) || c.name.toLowerCase().replace(/\s+/g, '-') === id
+  );
+
+  const categoryId = matchedCat ? matchedCat.id : (id && id !== 'all' ? id : null);
+  const categoryTitle = name || matchedCat?.name || (id === 'all' ? 'All Categories' : id ? id.replace(/-/g, ' ').toUpperCase() : 'Category');
+
+  // Fetch articles: uses subcat2_id when selected, otherwise category_id
+  const { articles, loading, loadingMore, error, loadMore, hasMore } = useCategoryArticles(
+    categoryId,
+    selectedSubcat2Id
+  );
+
+  // Extract all subcategories_2 from subcategories_1
+  const allSubcat2Items: SubCategory2[] = matchedCat?.subcategories_1?.flatMap(
+    (sub1) => sub1.subcategories_2 || []
+  ) || [];
+
+  const subFilterList = [
+    { id: null, name: 'All' },
+    ...allSubcat2Items.map((sub2) => ({ id: sub2.id, name: sub2.name })),
+  ];
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
@@ -277,13 +116,15 @@ export default function CategoryDetails() {
           {/* Category Header Area */}
           <View className="flex-row items-center mb-3">
             <View className="w-1.5 h-1.5 rounded-full bg-primary mr-2" />
-            <Label className="text-[10px] text-primary font-bold uppercase tracking-widest">{currentSection.tag}</Label>
+            <Label className="text-[10px] text-primary font-bold uppercase tracking-widest">
+              Category Feed
+            </Label>
           </View>
 
-          <Headline className="text-3xl mb-3 text-gray-900 font-serif">{currentSection.title}</Headline>
+          <Headline className="text-3xl mb-3 text-gray-900 font-serif">{categoryTitle}</Headline>
 
           <Label className="text-sm text-gray-600 leading-relaxed mb-6 font-serif">
-            {currentSection.description}
+            Latest verified dispatches, analysis, and breaking stories curated under {categoryTitle}.
           </Label>
 
           {/* Briefing Widget */}
@@ -293,8 +134,10 @@ export default function CategoryDetails() {
                 <Activity size={20} color="#2563EB" />
               </View>
               <View>
-                <Headline className="text-sm">Curated Feed Ready</Headline>
-                <Label className="text-[11px] text-gray-500 mt-0.5">{currentSection.articles.length} verified guides • updated live</Label>
+                <Headline className="text-sm">Live Feed Ready</Headline>
+                <Label className="text-[11px] text-gray-500 mt-0.5">
+                  {articles.length} stories loaded • Updated live
+                </Label>
               </View>
             </View>
             <TouchableOpacity className="bg-[#8B0000] px-4 py-2 rounded-full">
@@ -302,98 +145,169 @@ export default function CategoryDetails() {
             </TouchableOpacity>
           </View>
 
-          {/* Sub-filters */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6 -mx-4 px-4">
-            {currentSection.subFilters.map((filter, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setActiveSub(filter)}
-                className={`px-4 py-2 rounded-full mr-2 ${activeSub === filter ? 'bg-[#8B0000]' : 'bg-blue-50 border border-blue-100'}`}
-              >
-                <Label className={`text-xs font-bold ${activeSub === filter ? 'text-white' : 'text-blue-700'}`}>{filter}</Label>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          {/* Subcategory Chips: Triggers GET /articles/?subcat2_id=X&page=1 on click */}
+          {subFilterList.length > 1 && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mb-6 -mx-4 px-4">
+              {subFilterList.map((item) => {
+                const isActive = selectedSubcat2Id === item.id;
+                return (
+                  <TouchableOpacity
+                    key={item.id === null ? 'all-subcat' : String(item.id)}
+                    onPress={() => setSelectedSubcat2Id(item.id)}
+                    className={`px-4 py-2 rounded-full mr-2 ${
+                      isActive ? 'bg-[#8B0000]' : 'bg-blue-50 border border-blue-100'
+                    }`}
+                  >
+                    <Label
+                      className={`text-xs font-bold ${
+                        isActive ? 'text-white' : 'text-blue-700'
+                      }`}
+                    >
+                      {item.name}
+                    </Label>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
 
           {/* Sorting Toolbar */}
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row bg-gray-50 p-1 rounded-xl border border-gray-100">
               <TouchableOpacity
                 onPress={() => setActiveSort('Latest')}
-                style={activeSort === 'Latest' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 } : undefined}
+                style={
+                  activeSort === 'Latest'
+                    ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 }
+                    : undefined
+                }
                 className={`px-4 py-1.5 rounded-lg ${activeSort === 'Latest' ? 'bg-white' : ''}`}
               >
-                <Label className={`text-xs font-bold ${activeSort === 'Latest' ? 'text-gray-900' : 'text-gray-500'}`}>Latest</Label>
+                <Label className={`text-xs font-bold ${activeSort === 'Latest' ? 'text-gray-900' : 'text-gray-500'}`}>
+                  Latest
+                </Label>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setActiveSort('Most Read')}
-                style={activeSort === 'Most Read' ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 } : undefined}
+                style={
+                  activeSort === 'Most Read'
+                    ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 1 }
+                    : undefined
+                }
                 className={`px-4 py-1.5 rounded-lg ${activeSort === 'Most Read' ? 'bg-white' : ''}`}
               >
-                <Label className={`text-xs font-bold ${activeSort === 'Most Read' ? 'text-gray-900' : 'text-gray-500'}`}>Most Read</Label>
+                <Label className={`text-xs font-bold ${activeSort === 'Most Read' ? 'text-gray-900' : 'text-gray-500'}`}>
+                  Most Read
+                </Label>
               </TouchableOpacity>
             </View>
+
             <View className="flex-row items-center bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <SlidersHorizontal size={14} color="#6B7280" className="mr-2" />
               <Label className="text-xs text-gray-600 font-bold">Filter</Label>
             </View>
-            <Label className="text-[11px] text-gray-500">{filteredArticles.length} Stories</Label>
+            <Label className="text-[11px] text-gray-500">{articles.length} Stories</Label>
           </View>
         </View>
 
         {/* Article List */}
         <View className="px-4 py-4 gap-y-4 bg-[#F8F9FA]">
-          {filteredArticles.map((article) => (
-            <TouchableOpacity
-              key={article.id}
-              activeOpacity={0.8}
-              onPress={() => router.push(`/article/${article.id}`)}
-              className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
-              style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}
-            >
-              <View className="flex-row justify-between items-start mb-2">
-                <Badge label={article.category} variant={article.badgeVariant as any} className="rounded-md" />
-                <TouchableOpacity>
-                  <Bookmark size={20} color="#6B7280" />
-                </TouchableOpacity>
-              </View>
+          {loading ? (
+            <View className="py-12 items-center justify-center">
+              <ActivityIndicator size="large" color="#002249" />
+              <Label className="text-xs text-gray-500 mt-3 font-medium">Fetching subcategory articles...</Label>
+            </View>
+          ) : error ? (
+            <View className="py-12 px-4 items-center bg-white rounded-2xl border border-red-100">
+              <Label className="text-sm font-bold text-red-600 mb-1">Failed to load articles</Label>
+              <Label className="text-xs text-gray-500 text-center mb-4">{error}</Label>
+            </View>
+          ) : articles.length === 0 ? (
+            <View className="py-12 px-4 items-center bg-white rounded-2xl border border-gray-100">
+              <Sparkles size={32} color="#9CA3AF" />
+              <Label className="text-base font-bold text-gray-700 mt-3">No Articles Found</Label>
+              <Label className="text-xs text-gray-500 text-center mt-1">
+                There are currently no published articles in this subcategory.
+              </Label>
+            </View>
+          ) : (
+            articles.map((article, index) => {
+              const artId = article._id || article.id || index;
+              const title = getArticleTitle(article);
+              const excerpt = getArticleExcerpt(article);
+              const author = getArticleAuthor(article);
+              const date = formatDate(article.created_at || article.createdAt || article.publishedAt);
+              const imageUri = getArticleImage(article);
+              const catLabel =
+                typeof article.category === 'string'
+                  ? article.category
+                  : article.category?.name || categoryTitle;
 
-              <View className="flex-row justify-between">
-                <View className="flex-1 pr-4 justify-between">
-                  <Headline className="text-[17px] leading-snug mb-1 text-gray-900" numberOfLines={2}>
-                    {article.title}
-                  </Headline>
-                  <Label className="text-xs text-gray-500 leading-relaxed mb-3" numberOfLines={2}>
-                    {article.excerpt}
-                  </Label>
-
-                  <View className="flex-row items-center">
-                    <Label className="text-xs text-gray-700 font-medium">{article.author}</Label>
-                    <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
-                    <Label className="text-[11px] text-gray-500">{article.date}</Label>
-                    <View className="flex-1" />
-                    <View className="flex-row items-center">
-                      <Clock size={12} color="#002249" className="mr-1" />
-                      <Label className="text-[11px] font-bold text-primary">{article.readTime}</Label>
-                    </View>
+              return (
+                <TouchableOpacity
+                  key={String(artId)}
+                  activeOpacity={0.8}
+                  onPress={() => router.push(`/article/${artId}`)}
+                  className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
+                  style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}
+                >
+                  <View className="flex-row justify-between items-start mb-2">
+                    <Badge label={catLabel.toUpperCase()} variant="blue" className="rounded-md" />
+                    <TouchableOpacity>
+                      <Bookmark size={20} color="#6B7280" />
+                    </TouchableOpacity>
                   </View>
-                </View>
 
-                <Image
-                  source={{ uri: article.image }}
-                  className="w-24 h-24 rounded-xl bg-gray-100"
-                />
-              </View>
-            </TouchableOpacity>
-          ))}
+                  <View className="flex-row justify-between">
+                    <View className="flex-1 pr-4 justify-between">
+                      <Headline className="text-[17px] leading-snug mb-1 text-gray-900" numberOfLines={2}>
+                        {title}
+                      </Headline>
+                      <Label className="text-xs text-gray-500 leading-relaxed mb-3" numberOfLines={2}>
+                        {excerpt}
+                      </Label>
+
+                      <View className="flex-row items-center">
+                        <Label className="text-xs text-gray-700 font-medium">{author}</Label>
+                        <View className="w-1 h-1 rounded-full bg-gray-300 mx-2" />
+                        <Label className="text-[11px] text-gray-500">{date}</Label>
+                        <View className="flex-1" />
+                        <View className="flex-row items-center">
+                          <Clock size={12} color="#002249" className="mr-1" />
+                          <Label className="text-[11px] font-bold text-primary">3 min read</Label>
+                        </View>
+                      </View>
+                    </View>
+
+                    <Image
+                      source={{ uri: imageUri }}
+                      className="w-24 h-24 rounded-xl bg-gray-100"
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
 
           {/* Load More Button */}
-          <View className="items-center py-6">
-            <TouchableOpacity className="bg-white border border-gray-200 w-full py-3.5 rounded-xl flex-row justify-center items-center shadow-sm">
-              <Label className="text-sm font-bold text-gray-700 mr-2">Load More Stories</Label>
-              <ArrowDown size={16} color="#4B5563" />
-            </TouchableOpacity>
-          </View>
+          {!loading && articles.length > 0 && hasMore && (
+            <View className="items-center py-6">
+              <TouchableOpacity
+                disabled={loadingMore}
+                onPress={loadMore}
+                className="bg-[#002249] border border-gray-200 w-full py-3.5 rounded-xl flex-row justify-center items-center shadow-sm"
+              >
+                {loadingMore ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Label className="text-sm font-bold text-white mr-2">Load More Stories</Label>
+                    <ArrowDown size={16} color="#FFFFFF" />
+                  </>
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         {/* Padding for Bottom Nav */}
@@ -407,4 +321,3 @@ export default function CategoryDetails() {
     </SafeAreaView>
   );
 }
-

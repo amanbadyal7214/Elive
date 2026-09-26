@@ -37,14 +37,15 @@ export function CategoryFilters() {
               <TouchableOpacity
                 key={item.id.toString()}
                 onPress={() => {
-                  const slug =
-                    item.id === 'all'
-                      ? 'all'
-                      : item.rawName
-                      ? item.rawName.toLowerCase().replace(/\s+/g, '-')
-                      : item.name.toLowerCase().replace(/\s+/g, '-');
                   setActive(item.name);
-                  router.push(`/category/${slug}`);
+                  if (item.id === 'all') {
+                    router.push('/category/all');
+                  } else {
+                    router.push({
+                      pathname: '/category/[id]',
+                      params: { id: String(item.id), name: item.rawName },
+                    });
+                  }
                 }}
                 className={cn(
                   'px-4 py-2 rounded-full flex-row items-center',
