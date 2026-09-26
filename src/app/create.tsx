@@ -143,7 +143,7 @@ export default function CreateArticleScreen() {
 
   const handlePublishOrDraft = async (postStatus: 'Draft' | 'Published') => {
     if (!safeTitle.trim()) {
-      alert('Please enter a story title');
+      alert('Please enter a Post title');
       return;
     }
 
@@ -352,11 +352,11 @@ export default function CreateArticleScreen() {
 
               {/* Title Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
-                Story Title *
+                Post Title *
               </Label>
               <TextInput
                 className="text-2xl font-serif font-bold text-[#002249] mb-5 p-4 bg-gray-50 rounded-2xl border border-gray-100"
-                placeholder="Title of your story or analysis..."
+                placeholder="Title of your post or analysis..."
                 placeholderTextColor="#9CA3AF"
                 value={title}
                 onChangeText={setTitle}
@@ -365,7 +365,7 @@ export default function CreateArticleScreen() {
 
               {/* Subtitle Input */}
               <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">
-                Subtitle / Summary
+              Summary
               </Label>
               <TextInput
                 className="text-base font-serif text-gray-800 mb-6 p-4 bg-gray-50 rounded-2xl border border-gray-100"
@@ -501,7 +501,7 @@ export default function CreateArticleScreen() {
           {/* STEP 2: Write Story & Content */}
           {currentStep === 2 && (
             <View>
-              <View className="flex-row items-center justify-between mb-4">
+              <View className="flex-row items-center justify-between mb-3">
                 <Label className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                   Main Article Body
                 </Label>
@@ -509,16 +509,58 @@ export default function CreateArticleScreen() {
               </View>
 
               {/* Title Header snippet */}
-              <Headline className="text-2xl font-serif font-bold text-gray-900 mb-2">
-                {title || 'Untitled Story'}
+              <Headline className="text-xl font-serif font-bold text-gray-900 mb-1">
+                {title || 'Untitled Post'}
               </Headline>
               {subtitle.length > 0 && (
-                <Label className="text-sm font-serif text-gray-600 mb-4 italic">{subtitle}</Label>
+                <Label className="text-xs font-serif text-gray-600 mb-3 italic">{subtitle}</Label>
               )}
+
+              {/* Formatting Toolbar directly above input */}
+              <View className="flex-row items-center justify-between bg-gray-100 p-2 rounded-2xl border border-gray-200 mb-3 px-3">
+                <View className="flex-row items-center gap-2">
+                  <TouchableOpacity
+                    onPress={() => setContent((prev) => prev + ' **bold text** ')}
+                    className="p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <Bold size={16} color="#002249" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setContent((prev) => prev + ' *italic text* ')}
+                    className="p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <Italic size={16} color="#002249" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setContent((prev) => prev + '\n- Item 1\n- Item 2\n')}
+                    className="p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <List size={16} color="#002249" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setContent((prev) => prev + '\n> Quote text here\n')}
+                    className="p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <Quote size={16} color="#002249" />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => setContent((prev) => prev + ' [link text](https://example.com) ')}
+                    className="p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <LinkIcon size={16} color="#002249" />
+                  </TouchableOpacity>
+                </View>
+
+                <Label className="text-[11px] font-mono text-gray-500">{wordCount} words</Label>
+              </View>
 
               {/* Article Main Body Input */}
               <TextInput
-                className="text-base font-serif text-gray-800 leading-relaxed min-h-[320px] p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6"
+                className="text-base font-serif text-gray-800 leading-relaxed min-h-[300px] p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6"
                 placeholder="Start writing your article..."
                 placeholderTextColor="#9CA3AF"
                 value={content}
@@ -580,7 +622,7 @@ export default function CreateArticleScreen() {
                 </View>
 
                 <Headline className="text-2xl font-serif text-gray-900 mb-3">
-                  {title || 'Untitled Story'}
+                  {title || 'Untitled Post'}
                 </Headline>
 
                 {subtitle.length > 0 && (
@@ -635,42 +677,7 @@ export default function CreateArticleScreen() {
           )}
         </ScrollView>
 
-        {/* STEP 2 Formatting Toolbar */}
-        {currentStep === 2 && (
-          <View className="flex-row items-center justify-between px-4 py-3 bg-white border-t border-gray-100 shadow-md">
-            <View className="flex-row items-center gap-4">
-              <TouchableOpacity className="p-1">
-                <Bold color="#4B5563" size={18} />
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <Italic color="#4B5563" size={18} />
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <LinkIcon color="#4B5563" size={18} />
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <Label className="font-bold text-gray-700 text-sm">H1</Label>
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <Label className="font-bold text-gray-700 text-sm">H2</Label>
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <Quote color="#4B5563" size={18} />
-              </TouchableOpacity>
-              <TouchableOpacity className="p-1">
-                <List color="#4B5563" size={18} />
-              </TouchableOpacity>
-            </View>
 
-            {/* Word Count Badge */}
-            <View className="flex-row items-center bg-gray-100 px-3 py-1.5 rounded-full">
-              <View className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />
-              <Label className="text-xs font-medium text-gray-700">
-                {wordCount} words · ~{readTime} min read
-              </Label>
-            </View>
-          </View>
-        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

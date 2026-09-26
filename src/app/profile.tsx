@@ -653,7 +653,9 @@ export default function ProfileScreen() {
                 {/* Full Name */}
                 <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Full Name</Label>
                 <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3 mb-4 border border-gray-200">
-                  <UserIcon size={18} color="#6B7280" className="mr-3" />
+                  <View style={{ marginRight: 12 }}>
+                    <UserIcon size={18} color="#6B7280" />
+                  </View>
                   <TextInput
                     className="flex-1 text-sm text-gray-900 font-sans"
                     placeholder="Mohd Usman"
@@ -685,7 +687,9 @@ export default function ProfileScreen() {
                 {/* Mobile Number */}
                 <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Mobile Number</Label>
                 <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3 mb-4 border border-gray-200">
-                  <Phone size={18} color="#6B7280" className="mr-3" />
+                  <View style={{ marginRight: 12 }}>
+                    <Phone size={18} color="#6B7280" />
+                  </View>
                   <TextInput
                     className="flex-1 text-sm text-gray-900 font-sans"
                     placeholder="9876543210"
@@ -828,7 +832,9 @@ export default function ProfileScreen() {
                 <>
                   <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Enter Verification OTP</Label>
                   <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                    <KeyRound size={18} color="#4B5563" className="mr-3" />
+                    <View style={{ marginRight: 12 }}>
+                      <KeyRound size={18} color="#4B5563" />
+                    </View>
                     <TextInput
                       className="flex-1 text-sm text-gray-900 font-sans tracking-widest"
                       placeholder="123456"
@@ -873,7 +879,9 @@ export default function ProfileScreen() {
                     <>
                       <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Full Name</Label>
                       <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                        <UserIcon size={18} color="#4B5563" className="mr-3" />
+                        <View style={{ marginRight: 12 }}>
+                          <UserIcon size={18} color="#4B5563" />
+                        </View>
                         <TextInput
                           className="flex-1 text-sm text-gray-900 font-sans"
                           placeholder="Mohd Usman"
@@ -889,7 +897,9 @@ export default function ProfileScreen() {
                     Email Address
                   </Label>
                   <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                    <AtSign size={18} color="#4B5563" className="mr-3" />
+                    <View style={{ marginRight: 12 }}>
+                      <AtSign size={18} color="#4B5563" />
+                    </View>
                     <TextInput
                       className="flex-1 text-sm text-gray-900 font-sans"
                       placeholder="usman@example.com"
@@ -903,7 +913,9 @@ export default function ProfileScreen() {
 
                   <Label className="text-[11px] font-bold text-gray-700 uppercase tracking-widest mb-2">Password</Label>
                   <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3.5 mb-5 border border-gray-100">
-                    <Lock size={18} color="#4B5563" className="mr-3" />
+                    <View style={{ marginRight: 12 }}>
+                      <Lock size={18} color="#4B5563" />
+                    </View>
                     <TextInput
                       className="flex-1 text-sm text-gray-900 font-sans"
                       placeholder="••••••••"
