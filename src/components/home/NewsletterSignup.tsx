@@ -22,7 +22,9 @@ export function NewsletterSignup() {
         </Body>
 
         <View className="bg-[#3D3436] rounded-xl flex-row items-center px-4 h-12 mb-4 border border-white/10">
-          <Mail color="#9CA3AF" size={18} className="mr-3" />
+          <View style={{ marginRight: 12 }}>
+            <Mail color="#9CA3AF" size={18} />
+          </View>
           <TextInput
             placeholder="Enter your email address"
             placeholderTextColor="#9CA3AF"

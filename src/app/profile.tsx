@@ -657,7 +657,7 @@ export default function ProfileScreen() {
                     <UserIcon size={18} color="#6B7280" />
                   </View>
                   <TextInput
-                    className="flex-1 text-sm text-gray-900 font-sans"
+                    className="flex-1 text-sm text-gray-900 font-sans pl-1"
                     placeholder="Mohd Usman"
                     placeholderTextColor="#9CA3AF"
                     value={editFullName}
@@ -691,7 +691,7 @@ export default function ProfileScreen() {
                     <Phone size={18} color="#6B7280" />
                   </View>
                   <TextInput
-                    className="flex-1 text-sm text-gray-900 font-sans"
+                    className="flex-1 text-sm text-gray-900 font-sans pl-1"
                     placeholder="9876543210"
                     placeholderTextColor="#9CA3AF"
                     value={editMobile}

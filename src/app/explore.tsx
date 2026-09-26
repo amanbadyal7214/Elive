@@ -118,7 +118,9 @@ export default function ExploreScreen() {
         {/* Search Bar */}
         <View className="px-4 py-4 border-b border-gray-100">
           <View className="flex-row items-center bg-gray-100 px-4 py-3 rounded-full border border-gray-200">
-            <Search size={20} color="#6B7280" className="mr-3" />
+            <View style={{ marginRight: 12 }}>
+              <Search size={20} color="#6B7280" />
+            </View>
             <TextInput
               className="flex-1 text-sm text-gray-900 font-sans"
               placeholder="Search articles, topics, authors..."
