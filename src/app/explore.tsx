@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Filter, Layers, Search, X } from 'lucide-react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';
@@ -48,9 +48,28 @@ function getArticleImage(article: Article): string {
 
 export default function ExploreScreen() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | string>('all');
   const [selectedSubcat2Id, setSelectedSubcat2Id] = useState<number | string | null>(null);
+
+  // Debounce search query so API is called 750ms after user stops typing
+  useEffect(() => {
+    if (!searchInput.trim()) {
+      setActiveSearchQuery('');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setActiveSearchQuery(searchInput.trim());
+    }, 750);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const handleSearchSubmit = () => {
+    setActiveSearchQuery(searchInput.trim());
+  };
 
   // Fetch dynamic categories from API
   const { categories, loading: loadingCategories } = useCategories();
@@ -58,11 +77,11 @@ export default function ExploreScreen() {
   // Fetch trending articles for home / top recommendations
   const { trendingArticles, loading: loadingHome } = useHome();
 
-  // Fetch articles based on selected category, subcategory & search query (GET /articles/?search=query)
+  // Fetch articles based on selected category, subcategory & active search query (GET /articles/?search=query)
   const { articles: categoryArticles, loading: loadingCatArticles } = useCategoryArticles(
     selectedCategoryId === 'all' ? null : selectedCategoryId,
     selectedSubcat2Id,
-    searchQuery
+    activeSearchQuery
   );
 
   const handleCategoryPress = (catId: number | string) => {
@@ -104,7 +123,7 @@ export default function ExploreScreen() {
   // Determine articles list to display:
   // If search query or filters are active, use categoryArticles fetched from API
   const filteredArticles =
-    searchQuery.trim() || selectedCategoryId !== 'all' || selectedSubcat2Id
+    activeSearchQuery.trim() || selectedCategoryId !== 'all' || selectedSubcat2Id
       ? categoryArticles
       : (categoryArticles.length > 0 ? categoryArticles : trendingArticles);
 
@@ -115,24 +134,39 @@ export default function ExploreScreen() {
       <Header />
 
       <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
-        {/* Search Bar */}
+        {/* Search Bar with Submit Button & 750ms Debounce */}
         <View className="px-4 py-4 border-b border-gray-100">
-          <View className="flex-row items-center bg-gray-100 px-4 py-3 rounded-full border border-gray-200">
-            <View style={{ marginRight: 12 }}>
-              <Search size={20} color="#6B7280" />
+          <View className="flex-row items-center bg-gray-100 px-3 py-2 rounded-full border border-gray-200">
+            <View style={{ marginRight: 8, marginLeft: 4 }}>
+              <Search size={18} color="#6B7280" />
             </View>
             <TextInput
-              className="flex-1 text-sm text-gray-900 font-sans"
+              className="flex-1 text-sm text-gray-900 font-sans py-1"
               placeholder="Search articles, topics, authors..."
               placeholderTextColor="#9CA3AF"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
+              value={searchInput}
+              onChangeText={setSearchInput}
+              onSubmitEditing={handleSearchSubmit}
+              returnKeyType="search"
             />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <X size={18} color="#6B7280" />
+            {searchInput.length > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  setSearchInput('');
+                  setActiveSearchQuery('');
+                }}
+                className="p-1 mr-1.5"
+              >
+                <X size={16} color="#6B7280" />
               </TouchableOpacity>
             )}
+            <TouchableOpacity
+              onPress={handleSearchSubmit}
+              className="bg-[#002249] px-4 py-2 rounded-full flex-row items-center"
+              activeOpacity={0.8}
+            >
+              <Label className="text-white text-xs font-bold">Search</Label>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -250,7 +284,16 @@ export default function ExploreScreen() {
                 <Label className="text-xs text-gray-500 mt-3">Loading stories...</Label>
               </View>
             ) : filteredArticles.length === 0 ? (
-              <View className="bg-white rounded-2xl p-8 items-center justify-center border border-gray-100 shadow-sm my-4">
+              <View
+                className="bg-white rounded-2xl p-8 items-center justify-center border border-gray-100 my-4"
+                style={{
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 1 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 2,
+                  elevation: 1,
+                }}
+              >
                 <Filter size={32} color="#9CA3AF" className="mb-3" />
                 <Headline className="text-base text-gray-800 mb-1">No articles found</Headline>
                 <Label className="text-xs text-gray-500 text-center mb-4">
@@ -260,7 +303,8 @@ export default function ExploreScreen() {
                   onPress={() => {
                     setSelectedCategoryId('all');
                     setSelectedSubcat2Id(null);
-                    setSearchQuery('');
+                    setSearchInput('');
+                    setActiveSearchQuery('');
                   }}
                   className="bg-primary px-5 py-2.5 rounded-full"
                 >
@@ -281,7 +325,14 @@ export default function ExploreScreen() {
                       key={String(artId)}
                       onPress={() => router.push(`/article/${artId}`)}
                       activeOpacity={0.8}
-                      className="flex-row justify-between pb-6 border-b border-gray-100 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm"
+                      className="flex-row justify-between pb-6 border-b border-gray-100 bg-white p-4 rounded-2xl border border-gray-100"
+                      style={{
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowOpacity: 0.05,
+                        shadowRadius: 2,
+                        elevation: 1,
+                      }}
                     >
                       <View className="flex-1 pr-4 justify-between">
                         <View className="flex-row items-center mb-2 gap-2 flex-wrap">
