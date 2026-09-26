@@ -58,10 +58,11 @@ export default function ExploreScreen() {
   // Fetch trending articles for home / top recommendations
   const { trendingArticles, loading: loadingHome } = useHome();
 
-  // Fetch articles based on selected category & subcategory (GET /articles/?category_id=X or ?subcat2_id=Y)
+  // Fetch articles based on selected category, subcategory & search query (GET /articles/?search=query)
   const { articles: categoryArticles, loading: loadingCatArticles } = useCategoryArticles(
     selectedCategoryId === 'all' ? null : selectedCategoryId,
-    selectedSubcat2Id
+    selectedSubcat2Id,
+    searchQuery
   );
 
   const handleCategoryPress = (catId: number | string) => {
@@ -101,21 +102,11 @@ export default function ExploreScreen() {
   }
 
   // Determine articles list to display:
-  // If 'all' is selected and no subcategory, show trendingArticles; else show categoryArticles
-  const rawArticlesList =
-    categoryArticles.length > 0
+  // If search query or filters are active, use categoryArticles fetched from API
+  const filteredArticles =
+    searchQuery.trim() || selectedCategoryId !== 'all' || selectedSubcat2Id
       ? categoryArticles
-      : trendingArticles;
-
-  // Filter articles based on search query
-  const filteredArticles = rawArticlesList.filter((article) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    const title = getArticleTitle(article).toLowerCase();
-    const cat = getArticleCategory(article).toLowerCase();
-    const author = getArticleAuthor(article).toLowerCase();
-    return title.includes(q) || cat.includes(q) || author.includes(q);
-  });
+      : (categoryArticles.length > 0 ? categoryArticles : trendingArticles);
 
   const isLoading = loadingHome || loadingCategories || loadingCatArticles;
 

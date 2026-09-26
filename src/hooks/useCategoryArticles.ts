@@ -35,7 +35,8 @@ function extractArticlesArray(resData: any): { articles: Article[]; hasMore: boo
 
 export function useCategoryArticles(
   categoryId?: string | number | null,
-  subcat2Id?: string | number | null
+  subcat2Id?: string | number | null,
+  searchQuery?: string | null
 ): UseCategoryArticlesReturn {
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -52,6 +53,10 @@ export function useCategoryArticles(
 
       try {
         const queryParams: Record<string, any> = { page: targetPage };
+
+        if (searchQuery && searchQuery.trim()) {
+          queryParams.search = searchQuery.trim();
+        }
 
         // If subcat2_id is provided, pass subcat2_id in query params
         if (subcat2Id) {
@@ -80,7 +85,7 @@ export function useCategoryArticles(
         console.warn(`[useCategoryArticles] API Error handled gracefully:`, err.message);
         const errorMessage =
           typeof err.response?.data === 'string' && err.response?.data.includes('<!doctype html>')
-            ? 'Backend Server Error (500). Please fix backend SQL query.'
+            ? 'Backend Server Error (500).'
             : err.response?.data?.message || err.message || 'Failed to fetch articles';
         setError(errorMessage);
         if (!append) {
@@ -91,13 +96,13 @@ export function useCategoryArticles(
         setLoadingMore(false);
       }
     },
-    [categoryId, subcat2Id]
+    [categoryId, subcat2Id, searchQuery]
   );
 
   useEffect(() => {
     setPage(1);
     fetchArticles(1, false);
-  }, [categoryId, subcat2Id, fetchArticles]);
+  }, [categoryId, subcat2Id, searchQuery, fetchArticles]);
 
   const refetch = useCallback(async () => {
     setPage(1);
