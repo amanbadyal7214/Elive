@@ -66,14 +66,26 @@ export function useCategoryArticles(
           params: queryParams,
         });
 
-        console.log(`[useCategoryArticles] API Response:`, response.data);
+        // Ensure data is not raw HTML error page
+        if (typeof response.data === 'string' && response.data.includes('<!doctype html>')) {
+          throw new Error('Server internal error (HTTP 500)');
+        }
+
+        console.log(`[useCategoryArticles] API Response loaded successfully`);
         const { articles: newArticles, hasMore: more } = extractArticlesArray(response.data);
 
         setArticles((prev) => (append ? [...prev, ...newArticles] : newArticles));
         setHasMore(more);
       } catch (err: any) {
-        console.error(`[useCategoryArticles] API Error:`, err);
-        setError(err.response?.data?.message || err.message || 'Failed to fetch articles');
+        console.warn(`[useCategoryArticles] API Error handled gracefully:`, err.message);
+        const errorMessage =
+          typeof err.response?.data === 'string' && err.response?.data.includes('<!doctype html>')
+            ? 'Backend Server Error (500). Please fix backend SQL query.'
+            : err.response?.data?.message || err.message || 'Failed to fetch articles';
+        setError(errorMessage);
+        if (!append) {
+          setArticles([]);
+        }
       } finally {
         setLoading(false);
         setLoadingMore(false);

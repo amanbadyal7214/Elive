@@ -103,11 +103,9 @@ export default function ExploreScreen() {
   // Determine articles list to display:
   // If 'all' is selected and no subcategory, show trendingArticles; else show categoryArticles
   const rawArticlesList =
-    selectedCategoryId === 'all' && selectedSubcat2Id === null
-      ? trendingArticles.length > 0
-        ? trendingArticles
-        : categoryArticles
-      : categoryArticles;
+    categoryArticles.length > 0
+      ? categoryArticles
+      : trendingArticles;
 
   // Filter articles based on search query
   const filteredArticles = rawArticlesList.filter((article) => {

@@ -7,7 +7,6 @@ import {
   Camera,
   Check,
   ChevronDown,
-  Cloud,
   Eye,
   Italic,
   Link as LinkIcon,
@@ -15,9 +14,9 @@ import {
   Quote,
   Share2,
   Sparkles,
-  Upload,
+  Upload
 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -106,11 +105,13 @@ export default function CreateArticleScreen() {
     setShowSub2Dropdown(false);
   };
 
-  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+  const safeContent = content || '';
+  const safeTitle = title || '';
+  const wordCount = safeContent.trim() ? safeContent.trim().split(/\s+/).length : 0;
   const readTime = Math.ceil(wordCount / 200) || 1;
 
   const handlePublishOrDraft = async (postStatus: 'Draft' | 'Published') => {
-    if (!title.trim()) {
+    if (!safeTitle.trim()) {
       alert('Please enter a story title');
       return;
     }
@@ -118,8 +119,8 @@ export default function CreateArticleScreen() {
     try {
       setStatus(postStatus);
       await createArticle({
-        post_title: title.trim(),
-        content: content.trim(),
+        post_title: safeTitle.trim(),
+        content: safeContent.trim(),
         category_id: selectedCategory ? selectedCategory.id : 1,
         subcategory_1_id: selectedSub1 ? selectedSub1.id : undefined,
         subcategory_2_id: selectedSub2 ? selectedSub2.id : undefined,
@@ -174,9 +175,8 @@ export default function CreateArticleScreen() {
         <View className="flex-row items-center justify-between mb-2">
           <TouchableOpacity onPress={() => setCurrentStep(1)} className="flex-1 items-center">
             <View
-              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
-                currentStep >= 1 ? 'bg-[#002249]' : 'bg-gray-200'
-              }`}
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 1 ? 'bg-[#002249]' : 'bg-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${currentStep >= 1 ? 'text-white' : 'text-gray-600'}`}>
                 1
@@ -191,9 +191,8 @@ export default function CreateArticleScreen() {
 
           <TouchableOpacity onPress={() => setCurrentStep(2)} className="flex-1 items-center">
             <View
-              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
-                currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'
-              }`}
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep >= 2 ? 'bg-[#002249]' : 'bg-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${currentStep >= 2 ? 'text-white' : 'text-gray-600'}`}>
                 2
@@ -208,9 +207,8 @@ export default function CreateArticleScreen() {
 
           <TouchableOpacity onPress={() => setCurrentStep(3)} className="flex-1 items-center">
             <View
-              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${
-                currentStep === 3 ? 'bg-[#002249]' : 'bg-gray-200'
-              }`}
+              className={`w-7 h-7 rounded-full items-center justify-center mb-1 ${currentStep === 3 ? 'bg-[#002249]' : 'bg-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${currentStep === 3 ? 'text-white' : 'text-gray-600'}`}>
                 3
@@ -229,7 +227,7 @@ export default function CreateArticleScreen() {
           <Label className="text-sm font-bold text-gray-600">Cancel</Label>
         </TouchableOpacity>
 
-        
+
 
         {currentStep < 3 ? (
           <TouchableOpacity
@@ -381,7 +379,7 @@ export default function CreateArticleScreen() {
                 {selectedCategory?.subcategories_1 && selectedCategory.subcategories_1.length > 0 && (
                   <>
                     <Label className="text-[11px] font-bold text-gray-600 mb-1">
-                      Subcategory Level 1 
+                      Subcategory Level 1
                     </Label>
                     <View className="relative mb-4">
                       <TouchableOpacity
