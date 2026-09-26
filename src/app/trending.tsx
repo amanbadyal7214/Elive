@@ -1,13 +1,12 @@
 import { useRouter } from 'expo-router';
 import {
-  ArrowRight,
   Eye,
   Flame,
   RefreshCw,
   Share2,
-  Sparkles,
+  Sparkles
 } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -22,7 +21,7 @@ import { BottomNav } from '../components/home/BottomNav';
 import { Header } from '../components/home/Header';
 import { Avatar } from '../components/ui/Avatar';
 import { Badge } from '../components/ui/Badge';
-import { Body, Headline, Label } from '../components/ui/Typography';
+import { Headline, Label } from '../components/ui/Typography';
 import { Article, useHome } from '../hooks/useHome';
 
 function formatImageUrl(raw: any, fallback: string): string {
@@ -76,8 +75,8 @@ export default function TrendingScreen() {
   const displayArticles = activeFilter === 'hot'
     ? combinedList.slice(0, 5)
     : activeFilter === 'viral'
-    ? combinedList.slice(2)
-    : combinedList;
+      ? combinedList.slice(2)
+      : combinedList;
 
   const handleShareArticle = async (item: Article) => {
     const title = getArticleTitle(item);
@@ -121,9 +120,8 @@ export default function TrendingScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="-mx-4 px-4">
             <TouchableOpacity
               onPress={() => setActiveFilter('all')}
-              className={`px-4 py-2 rounded-full mr-2.5 border ${
-                activeFilter === 'all' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
-              }`}
+              className={`px-4 py-2 rounded-full mr-2.5 border ${activeFilter === 'all' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${activeFilter === 'all' ? 'text-white' : 'text-gray-700'}`}>
                 🔥 Top All ({displayArticles.length})
@@ -132,9 +130,8 @@ export default function TrendingScreen() {
 
             <TouchableOpacity
               onPress={() => setActiveFilter('hot')}
-              className={`px-4 py-2 rounded-full mr-2.5 border ${
-                activeFilter === 'hot' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
-              }`}
+              className={`px-4 py-2 rounded-full mr-2.5 border ${activeFilter === 'hot' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${activeFilter === 'hot' ? 'text-white' : 'text-gray-700'}`}>
                 ⚡ Most Popular
@@ -143,9 +140,8 @@ export default function TrendingScreen() {
 
             <TouchableOpacity
               onPress={() => setActiveFilter('viral')}
-              className={`px-4 py-2 rounded-full border ${
-                activeFilter === 'viral' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
-              }`}
+              className={`px-4 py-2 rounded-full border ${activeFilter === 'viral' ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
+                }`}
             >
               <Label className={`text-xs font-bold ${activeFilter === 'viral' ? 'text-white' : 'text-gray-700'}`}>
                 ✨ Rising Fast
@@ -241,14 +237,14 @@ export default function TrendingScreen() {
                       </View>
 
                       <View className="flex-row items-center gap-4">
-                          {(item.views || item.views_count) ? (
-                            <View className="flex-row items-center gap-1">
-                              <Eye color="#6B7280" size={14} />
-                              <Label className="text-xs text-gray-600 font-medium">
-                                {item.views || item.views_count}
-                              </Label>
-                            </View>
-                          ) : null}
+                        {(item.views || item.views_count) ? (
+                          <View className="flex-row items-center gap-1">
+                            <Eye color="#6B7280" size={14} />
+                            <Label className="text-xs text-gray-600 font-medium">
+                              {item.views || item.views_count}
+                            </Label>
+                          </View>
+                        ) : null}
 
                         <TouchableOpacity onPress={() => handleShareArticle(item)} className="p-1">
                           <Share2 color="#6B7280" size={16} />

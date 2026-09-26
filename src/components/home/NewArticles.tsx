@@ -102,7 +102,7 @@ export function NewArticles() {
     : fallbackArticles;
 
   return (
-    <View className="py-6 px-4 bg-[#F8F9FA] border-t border-gray-100">
+    <View className="py-3 px-4 bg-[#F8F9FA] border-t border-gray-100">
       <View className="flex-row items-center justify-between mb-6">
         <View className="flex-row items-center">
           <LayoutGrid color="#1B365D" size={20} className="mr-2" />
@@ -120,7 +120,7 @@ export function NewArticles() {
           <ActivityIndicator size="small" color="#1B365D" />
         </View>
       ) : (
-        <View className="gap-y-6">
+        <View className="gap-y-1">
           {displayArticles.map((item) => (
             <TouchableOpacity 
               key={item.id} 

@@ -87,8 +87,8 @@ export function BreakingUpdates() {
     : fallbackUpdates;
 
   return (
-    <View className="py-4 bg-white">
-      <View className="px-4 flex-row items-center justify-between mb-4">
+    <View className="mt-6 bg-white">
+      <View className="px-4 flex-row items-center justify-between ">
         <View className="flex-row items-center">
           <View className="w-2 h-2 rounded-full bg-primary mr-2" />
           <Headline className="text-lg"> Breaking Updates</Headline>
@@ -99,14 +99,14 @@ export function BreakingUpdates() {
       </View>
 
       {loading ? (
-        <View className="py-8 items-center justify-center">
+        <View className="pt-2 items-center justify-center">
           <ActivityIndicator size="small" color="#E11D48" />
         </View>
       ) : (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
+          contentContainerStyle={{ paddingHorizontal: 2, gap: 4 }}
         >
           {displayArticles.map((item) => (
             <TouchableOpacity
@@ -119,14 +119,14 @@ export function BreakingUpdates() {
               <View className="h-40 relative">
                 <ImageBackground
                   source={{ uri: item.image }}
-                  className="flex-1 p-3 justify-between"
+                  className="flex-1 p-2 justify-between"
                   defaultSource={{ uri: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=600&q=80' }}
                 >
                   <View className="items-start">
                     <Badge label={item.category} variant="primary" />
                   </View>
                   <View className="items-end">
-                    <View className="bg-black/70 px-2.5 py-1 rounded-full">
+                    <View className="bg-black/70 px-1 py-1 rounded-full">
                       <Label className="text-[10px] text-white font-bold tracking-wide">{item.time}</Label>
                     </View>
                   </View>

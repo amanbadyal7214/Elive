@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, ImageBackground, TouchableOpacity, Animated, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Clock, Eye, Flame, ThumbsUp, ThumbsDown, MessageCircle } from 'lucide-react-native';
+import { Clock, Eye, Flame, MessageCircle, ThumbsDown, ThumbsUp } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, ImageBackground, TouchableOpacity, View } from 'react-native';
 import useHome from '../../hooks/useHome';
-import { Headline, Label } from '../ui/Typography';
 import { Badge } from '../ui/Badge';
+import { Headline, Label } from '../ui/Typography';
 
 const fallbackTrending = [
   {
@@ -74,25 +74,25 @@ export function TrendingNow() {
 
   const displayBlogs = trendingArticles.length > 0
     ? trendingArticles.map((item) => {
-        const authorObj = item.author as any;
-        const authorName = typeof authorObj === 'object' && authorObj !== null
-          ? (authorObj.full_name || authorObj.name || 'Author')
-          : (typeof authorObj === 'string' ? authorObj : 'Author');
+      const authorObj = item.author as any;
+      const authorName = typeof authorObj === 'object' && authorObj !== null
+        ? (authorObj.full_name || authorObj.name || 'Author')
+        : (typeof authorObj === 'string' ? authorObj : 'Author');
 
-        return {
-          id: item._id || item.id || Math.random().toString(),
-          badge: item.badge || 'TRENDING',
-          category: formatCategory(item.category),
-          views: item.views ? `${item.views} VIEWS` : '15K VIEWS',
-          title: formatTitle(item),
-          authorName: authorName,
-          authorImage: typeof authorObj === 'object' && authorObj?.image
-            ? formatImage({ image: authorObj.image })
-            : 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
-          readTime: typeof item.readTime === 'string' ? item.readTime : '6 min read',
-          image: formatImage(item),
-        };
-      })
+      return {
+        id: item._id || item.id || Math.random().toString(),
+        badge: item.badge || 'TRENDING',
+        category: formatCategory(item.category),
+        views: item.views ? `${item.views} VIEWS` : '15K VIEWS',
+        title: formatTitle(item),
+        authorName: authorName,
+        authorImage: typeof authorObj === 'object' && authorObj?.image
+          ? formatImage({ image: authorObj.image })
+          : 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100',
+        readTime: typeof item.readTime === 'string' ? item.readTime : '6 min read',
+        image: formatImage(item),
+      };
+    })
     : fallbackTrending;
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export function TrendingNow() {
   const blog = displayBlogs[currentIndex] || displayBlogs[0];
 
   return (
-    <View className="py-6 px-4 bg-white border-t border-gray-100">
+    <View className="py-3 px-4 bg-white border-t border-gray-100">
       <View className="flex-row items-center justify-between mb-4">
         <View className="flex-row items-center">
           <Flame color="#002249" size={20} className="mr-2" />
@@ -136,8 +136,8 @@ export function TrendingNow() {
         </View>
       ) : (
         <Animated.View style={{ opacity: fadeAnim }} className="w-full">
-          <TouchableOpacity 
-            activeOpacity={0.9} 
+          <TouchableOpacity
+            activeOpacity={0.9}
             className="rounded-2xl overflow-hidden h-[340px] w-full"
             onPress={() => router.push(`/article/${blog.id}`)}
           >
@@ -172,7 +172,7 @@ export function TrendingNow() {
                   <Label className="text-white/80 text-[10px]">{blog.views}</Label>
                 </View>
 
-                <Headline className="text-white text-[22px] mb-5 leading-snug font-bold shadow-md">
+                <Headline className="text-white text-[22px]  leading-snug font-bold shadow-md">
                   {blog.title}
                 </Headline>
 

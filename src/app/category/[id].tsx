@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Activity, ArrowDown, ArrowLeft, Clock, SlidersHorizontal, Sparkles } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { Activity, ArrowDown, ArrowLeft, SlidersHorizontal, Sparkles } from 'lucide-react-native';
+import { useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../../components/home/BottomNav';
@@ -151,14 +151,12 @@ export default function CategoryDetails() {
                   <TouchableOpacity
                     key={item.id === null ? 'all-subcat' : String(item.id)}
                     onPress={() => setSelectedSubcat2Id(item.id)}
-                    className={`px-4 py-2 rounded-full mr-2 ${
-                      isActive ? 'bg-[#8B0000]' : 'bg-blue-50 border border-blue-100'
-                    }`}
+                    className={`px-4 py-2 rounded-full mr-2 ${isActive ? 'bg-[#8B0000]' : 'bg-blue-50 border border-blue-100'
+                      }`}
                   >
                     <Label
-                      className={`text-xs font-bold ${
-                        isActive ? 'text-white' : 'text-blue-700'
-                      }`}
+                      className={`text-xs font-bold ${isActive ? 'text-white' : 'text-blue-700'
+                        }`}
                     >
                       {item.name}
                     </Label>

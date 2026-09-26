@@ -1,4 +1,3 @@
-import React from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';

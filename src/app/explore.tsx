@@ -1,13 +1,13 @@
 import { useRouter } from 'expo-router';
 import { Filter, Layers, Search, X } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '../components/home/BottomNav';
 import { Header } from '../components/home/Header';
 import { Badge } from '../components/ui/Badge';
 import { Headline, Label } from '../components/ui/Typography';
-import { useCategories, SubCategory1, SubCategory2 } from '../hooks/useCategories';
+import { SubCategory1, SubCategory2, useCategories } from '../hooks/useCategories';
 import { useCategoryArticles } from '../hooks/useCategoryArticles';
 import { Article, useHome } from '../hooks/useHome';
 
@@ -169,9 +169,8 @@ export default function ExploreScreen() {
                   <TouchableOpacity
                     key={String(filter.id)}
                     onPress={() => handleCategoryPress(filter.id)}
-                    className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border ${
-                      isSelected ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
-                    }`}
+                    className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border ${isSelected ? 'bg-[#002249] border-transparent' : 'bg-gray-50 border-gray-200'
+                      }`}
                     style={
                       isSelected
                         ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 1 }
@@ -212,9 +211,8 @@ export default function ExploreScreen() {
                           ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 1 }
                           : undefined
                       }
-                      className={`px-3.5 py-1.5 rounded-xl mr-2 flex-row items-center border ${
-                        isSubActive ? 'bg-[#002249] border-[#002249]' : 'bg-gray-50 border-gray-200'
-                      }`}
+                      className={`px-3.5 py-1.5 rounded-xl mr-2 flex-row items-center border ${isSubActive ? 'bg-[#002249] border-[#002249]' : 'bg-gray-50 border-gray-200'
+                        }`}
                     >
                       <Label className={`text-xs font-semibold ${isSubActive ? 'text-white' : 'text-gray-700'}`}>
                         {subItem.name}
@@ -242,8 +240,8 @@ export default function ExploreScreen() {
               {selectedSubcat2Id !== null
                 ? 'Subcategory Articles'
                 : selectedCategoryId !== 'all'
-                ? `${activeCategoryObj?.name} Stories`
-                : 'Top Recommended For You'}
+                  ? `${activeCategoryObj?.name} Stories`
+                  : 'Top Recommended For You'}
             </Headline>
 
             {isLoading && filteredArticles.length === 0 ? (

@@ -83,24 +83,24 @@ export function PopularBlogs() {
 
   const displayBlogs = popularArticles.length > 0
     ? popularArticles.map((item) => {
-        const authorObj = item.author as any;
-        const authorName = typeof authorObj === 'object' && authorObj !== null
-          ? (authorObj.full_name || authorObj.name || 'Author')
-          : (typeof authorObj === 'string' ? authorObj : 'Author');
+      const authorObj = item.author as any;
+      const authorName = typeof authorObj === 'object' && authorObj !== null
+        ? (authorObj.full_name || authorObj.name || 'Author')
+        : (typeof authorObj === 'string' ? authorObj : 'Author');
 
-        return {
-          id: item._id || item.id || Math.random().toString(),
-          author: authorName,
-          role: item.authorRole || 'Contributor',
-          initials: formatInitials(authorName),
-          bgColor: 'bg-blue-100 text-blue-700',
-          title: formatTitle(item),
-          excerpt: cleanExcerpt(item),
-          likes: item.likes || item.likes_count || 120,
-          comments: Array.isArray(item.comments) ? item.comments.length : (item.commentsCount || 0),
-          image: formatImage(item),
-        };
-      })
+      return {
+        id: item._id || item.id || Math.random().toString(),
+        author: authorName,
+        role: item.authorRole || 'Contributor',
+        initials: formatInitials(authorName),
+        bgColor: 'bg-blue-100 text-blue-700',
+        title: formatTitle(item),
+        excerpt: cleanExcerpt(item),
+        likes: item.likes || item.likes_count || 120,
+        comments: Array.isArray(item.comments) ? item.comments.length : (item.commentsCount || 0),
+        image: formatImage(item),
+      };
+    })
     : fallbackBlogs;
 
   const handleShareBlog = async (e: any, blogTitle: string) => {
@@ -116,8 +116,8 @@ export function PopularBlogs() {
   };
 
   return (
-    <View className="py-6 bg-gray-50">
-      <View className="px-4 flex-row items-center justify-between mb-6">
+    <View className="py-2 bg-gray-50">
+      <View className="px-4 flex-row items-center justify-between mb-2">
         <View className="flex-row items-center">
           <AlignLeft color="#2E7D32" size={20} className="mr-2" />
           <Headline className="text-xl"> Popular Blogs</Headline>
@@ -128,7 +128,7 @@ export function PopularBlogs() {
       </View>
 
       {loading ? (
-        <View className="py-8 items-center justify-center">
+        <View className="py-2 items-center justify-center">
           <ActivityIndicator size="small" color="#2E7D32" />
         </View>
       ) : (

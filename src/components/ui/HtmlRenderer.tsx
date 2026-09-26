@@ -22,7 +22,11 @@ const cleanHtml = (raw: string): string => {
     .replace(/<source-footnote[\s\S]*?<\/source-footnote>/gi, '')
     .replace(/<sources-carousel-inline[\s\S]*?<\/sources-carousel-inline>/gi, '')
     .replace(/<source-inline-chip[\s\S]*?<\/source-inline-chip>/gi, '')
+    .replace(/<source-footnote[^>]*\/?>/gi, '')
+    .replace(/<sources-carousel-inline[^>]*\/?>/gi, '')
+    .replace(/<source-inline-chip[^>]*\/?>/gi, '')
     .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<\/?o:p[^>]*>/gi, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
@@ -60,10 +64,14 @@ const parseHtmlToAST = (htmlString: string): ASTNode[] => {
     if (textContent) {
       const parent = stack[stack.length - 1];
       if (parent && parent.children) {
-        parent.children.push({
-          type: 'text',
-          text: textContent,
-        });
+        // Collapse newlines, carriage returns, and tabs into a single space (standard HTML rule)
+        const cleanedText = textContent.replace(/[\r\n\t]+/g, ' ').replace(/ {2,}/g, ' ');
+        if (cleanedText) {
+          parent.children.push({
+            type: 'text',
+            text: cleanedText,
+          });
+        }
       }
     } else if (tagName) {
       const lowerTag = tagName.toLowerCase();

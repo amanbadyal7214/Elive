@@ -1,8 +1,7 @@
-import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import {
   ArrowRight,
-  ArrowUpDown,
   AtSign,
   Camera,
   Check,
@@ -19,12 +18,11 @@ import {
   Phone,
   RefreshCw,
   Search,
-  SlidersHorizontal,
   Sun,
   User as UserIcon,
-  X,
+  X
 } from 'lucide-react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -467,9 +465,8 @@ export default function ProfileScreen() {
                     ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 }
                     : undefined
                 }
-                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${
-                  activeProfileTab === 'articles' ? 'bg-white' : ''
-                }`}
+                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'articles' ? 'bg-white' : ''
+                  }`}
               >
                 <Label className={`font-bold text-xs ${activeProfileTab === 'articles' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   My Articles
@@ -488,9 +485,8 @@ export default function ProfileScreen() {
                     ? { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 3, elevation: 2 }
                     : undefined
                 }
-                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${
-                  activeProfileTab === 'responses' ? 'bg-white' : ''
-                }`}
+                className={`flex-1 py-2.5 rounded-xl flex-row items-center justify-center ${activeProfileTab === 'responses' ? 'bg-white' : ''
+                  }`}
               >
                 <Label className={`font-bold text-xs ${activeProfileTab === 'responses' ? 'text-[#002249]' : 'text-gray-600'}`}>
                   Responses
@@ -674,9 +670,8 @@ export default function ProfileScreen() {
                       <TouchableOpacity
                         key={g}
                         onPress={() => setEditGender(g)}
-                        className={`flex-1 py-2.5 rounded-xl border items-center ${
-                          isSelected ? 'bg-[#002249] border-[#002249]' : 'bg-gray-50 border-gray-200'
-                        }`}
+                        className={`flex-1 py-2.5 rounded-xl border items-center ${isSelected ? 'bg-[#002249] border-[#002249]' : 'bg-gray-50 border-gray-200'
+                          }`}
                       >
                         <Label className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-gray-700'}`}>{g}</Label>
                       </TouchableOpacity>
@@ -766,8 +761,8 @@ export default function ProfileScreen() {
               {showOtpView
                 ? `Enter the 6-digit verification code sent to ${email}`
                 : activeTab === 'signIn'
-                ? 'Sign in to access personalized feeds, save articles, and engage with the community.'
-                : 'Create a free account to personalize your feed, save stories, and join the discussion.'}
+                  ? 'Sign in to access personalized feeds, save articles, and engage with the community.'
+                  : 'Create a free account to personalize your feed, save stories, and join the discussion.'}
             </Label>
           </View>
 
@@ -817,9 +812,8 @@ export default function ProfileScreen() {
             >
               {(error || localMessage) && (
                 <View
-                  className={`px-4 py-3 rounded-xl mb-4 ${
-                    error ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
-                  }`}
+                  className={`px-4 py-3 rounded-xl mb-4 ${error ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'
+                    }`}
                 >
                   <Label className={`text-xs ${error ? 'text-red-600 font-bold' : 'text-blue-700 font-medium'}`}>
                     {error || localMessage}
@@ -937,9 +931,8 @@ export default function ProfileScreen() {
                         activeOpacity={0.8}
                       >
                         <View
-                          className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${
-                            rememberMe ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'
-                          }`}
+                          className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${rememberMe ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'
+                            }`}
                         >
                           {rememberMe && <Check size={12} color="white" />}
                         </View>
@@ -957,9 +950,8 @@ export default function ProfileScreen() {
                         activeOpacity={0.8}
                       >
                         <View
-                          className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${
-                            termsAgreed ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'
-                          }`}
+                          className={`w-5 h-5 rounded flex items-center justify-center mr-2 border ${termsAgreed ? 'bg-[#002249] border-[#002249]' : 'bg-white border-gray-300'
+                            }`}
                         >
                           {termsAgreed && <Check size={12} color="white" />}
                         </View>

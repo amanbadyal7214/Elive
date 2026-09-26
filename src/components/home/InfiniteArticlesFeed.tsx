@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ArrowDown, Clock, Sparkles } from 'lucide-react-native';
-import React from 'react';
+import { ArrowDown, Sparkles } from 'lucide-react-native';
 import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
 import { useCategoryArticles } from '../../hooks/useCategoryArticles';
 import { Article } from '../../hooks/useHome';
@@ -98,7 +97,7 @@ export function InfiniteArticlesFeed({
   const handleLoadMore = onLoadMore || fetchedLoadMore;
 
   return (
-    <View className="py-6 bg-[#F8F9FA] border-t border-gray-100">
+    <View className="py-1 bg-[#F8F9FA] border-t border-gray-100">
       {/* Section Header */}
       <View className="px-4 mb-4">
         <View className="flex-row items-center mb-1">
@@ -113,16 +112,16 @@ export function InfiniteArticlesFeed({
       </View>
 
       {/* Articles Feed */}
-      <View className="px-4 gap-y-4">
+      <View className="px-4 gap-y-1">
         {loading && articles.length === 0 ? (
-          <View className="py-12 items-center justify-center bg-white rounded-2xl">
+          <View className="py-4 items-center justify-center bg-white rounded-2xl">
             <ActivityIndicator size="large" color="#002249" />
             <Label className="text-xs text-gray-500 mt-3 font-medium">
               Loading articles feed...
             </Label>
           </View>
         ) : articles.length === 0 ? (
-          <View className="py-10 px-4 items-center bg-white rounded-2xl border border-gray-100">
+          <View className="py-4 px-4 items-center bg-white rounded-2xl border border-gray-100">
             <Sparkles size={28} color="#9CA3AF" />
             <Label className="text-sm font-bold text-gray-700 mt-2">No More Stories</Label>
           </View>
@@ -141,7 +140,7 @@ export function InfiniteArticlesFeed({
                 key={String(artId)}
                 activeOpacity={0.8}
                 onPress={() => router.push(`/article/${artId}`)}
-                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm"
+                className="bg-white rounded-2xl p-3  border border-gray-100 shadow-sm"
                 style={{
                   elevation: 2,
                   shadowColor: '#000',
