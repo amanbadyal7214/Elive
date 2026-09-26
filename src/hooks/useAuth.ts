@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
+import { getStorageItem, removeStorageItem, setStorageItem } from '../utils/storage';
 
 export interface User {
   id: number | string;
@@ -37,6 +38,7 @@ export interface AuthSuccessResponse {
   message: string;
   token: string;
   user: User;
+  [key: string]: any;
 }
 
 export interface ResendOtpPayload {
@@ -60,7 +62,32 @@ export interface UseAuthReturn {
   verifyOtp: (payload: VerifyOtpPayload) => Promise<AuthSuccessResponse>;
   resendVerification: (payload: ResendOtpPayload) => Promise<ResendOtpResponse>;
   login: (payload: LoginPayload) => Promise<AuthSuccessResponse>;
+  logout: () => Promise<void>;
   clearError: () => void;
+}
+
+// Helper to save login/verify response in SecureStore
+export async function saveAuthResponse(data: AuthSuccessResponse): Promise<void> {
+  try {
+    if (data.token) {
+      await setStorageItem('token', data.token);
+    }
+    if (data.user) {
+      await setStorageItem('user', JSON.stringify(data.user));
+    }
+    await setStorageItem('auth_data', JSON.stringify(data));
+    console.log('[useAuth] Successfully saved auth data to SecureStore');
+  } catch (error) {
+    console.error('[useAuth] Error saving auth data to SecureStore:', error);
+  }
+}
+
+// Helper to clear auth from SecureStore
+export async function clearAuthData(): Promise<void> {
+  await removeStorageItem('token');
+  await removeStorageItem('user');
+  await removeStorageItem('auth_data');
+  console.log('[useAuth] Cleared auth data from SecureStore');
 }
 
 export function useAuth(): UseAuthReturn {
@@ -99,6 +126,11 @@ export function useAuth(): UseAuthReturn {
     try {
       const response = await axiosInstance.post<AuthSuccessResponse>('/auth/verify-otp', payload);
       console.log('[useAuth] Verify OTP Response:', response.data);
+
+      if (response.data && response.data.token) {
+        await saveAuthResponse(response.data);
+      }
+
       return response.data;
     } catch (err: any) {
       console.error('[useAuth] Verify OTP Error:', err);
@@ -134,13 +166,19 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
-  // 4. Login (POST /api/auth/login)
+  // 4. Login (POST /api/auth/login) - Saves response data to SecureStore
   const login = useCallback(async (payload: LoginPayload): Promise<AuthSuccessResponse> => {
     setLoading(true);
     setError(null);
     try {
       const response = await axiosInstance.post<AuthSuccessResponse>('/auth/login', payload);
       console.log('[useAuth] Login Response:', response.data);
+
+      // Save token, user, and response data into SecureStore
+      if (response.data) {
+        await saveAuthResponse(response.data);
+      }
+
       return response.data;
     } catch (err: any) {
       console.error('[useAuth] Login Error:', err);
@@ -155,6 +193,16 @@ export function useAuth(): UseAuthReturn {
     }
   }, []);
 
+  // 5. Logout
+  const logout = useCallback(async (): Promise<void> => {
+    setLoading(true);
+    try {
+      await clearAuthData();
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     loading,
     error,
@@ -162,6 +210,7 @@ export function useAuth(): UseAuthReturn {
     verifyOtp,
     resendVerification,
     login,
+    logout,
     clearError,
   };
 }

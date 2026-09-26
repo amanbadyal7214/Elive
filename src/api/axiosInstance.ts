@@ -13,7 +13,16 @@ const axiosInstance = axios.create({
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    try {
+      const { getStorageItem } = await import('../utils/storage');
+      const token = await getStorageItem('token');
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (err) {
+      console.warn('[axiosInstance] Error attaching token to request:', err);
+    }
     return config;
   },
   (error) => {
