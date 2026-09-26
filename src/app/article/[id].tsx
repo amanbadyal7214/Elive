@@ -61,6 +61,12 @@ export default function ArticleDetails() {
     ? (apiArticle.author.full_name || apiArticle.author.name || 'Author')
     : (typeof apiArticle?.author === 'string' ? apiArticle.author : 'Editorial Staff');
 
+  const authorRawImage = typeof apiArticle?.author === 'object'
+    ? ((apiArticle.author as any).image || (apiArticle.author as any).avatar || (apiArticle.author as any).photo)
+    : (apiArticle?.author_image || apiArticle?.author_photo || null);
+
+  const authorAvatar = formatImage(authorRawImage || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150');
+
   const dateStr = apiArticle?.created_at
     ? new Date(apiArticle.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
     : 'Recently';
@@ -148,7 +154,7 @@ export default function ArticleDetails() {
             {/* Author Row */}
             <View className="flex-row items-center justify-between py-4 border-t border-b border-gray-100">
               <View className="flex-row items-center flex-1">
-                <Avatar src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150" size={44} className="mr-3" />
+                <Avatar src={authorAvatar} size={44} className="mr-3" />
                 <View>
                   <View className="flex-row items-center">
                     <Headline className="text-base mr-1">{authorName}</Headline>

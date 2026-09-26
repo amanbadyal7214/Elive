@@ -364,53 +364,96 @@ export default function ProfileScreen() {
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
           {/* Profile Hero Card */}
-          <View className="px-4 pt-4 mb-4">
+          <View className="px-4 pt-4 mb-5">
             <View
               className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm"
-              style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 12 }}
+              style={{
+                elevation: 2,
+                shadowColor: '#002249',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.06,
+                shadowRadius: 12,
+              }}
             >
-              {/* Avatar & Actions Row */}
-              <View className="flex-row justify-between items-start mb-4">
-                <View className="relative">
-                  <Avatar
-                    src={formatAvatarUrl(currentUser?.image)}
-                    size={80}
-                    className="border-2 border-white shadow-md"
-                  />
-                  <View className="absolute bottom-0 right-0 bg-primary rounded-full p-0.5 border-2 border-white">
-                    <CheckCircle2 color="white" size={14} />
+              {/* Avatar & Main Info */}
+              <View>
+                <View className="flex-row justify-between items-start mb-4">
+                  <View className="relative">
+                    <Avatar
+                      src={formatAvatarUrl(currentUser?.image)}
+                      size={80}
+                      className="border-2 border-white shadow-md"
+                    />
+                    <View className="absolute bottom-0 right-0 bg-[#002249] rounded-full p-1 border-2 border-white shadow-sm">
+                      <CheckCircle2 color="#38BDF8" size={14} />
+                    </View>
+                  </View>
+
+                  <View className="flex-row items-center gap-2">
+                    <TouchableOpacity
+                      onPress={handleOpenEditModal}
+                      className="bg-[#002249] flex-row items-center px-4 py-2.5 rounded-full shadow-md"
+                      activeOpacity={0.85}
+                    >
+                      <Edit3 color="white" size={14} className="mr-1.5" />
+                      <Label className="text-white font-bold text-xs">Edit Profile</Label>
+                    </TouchableOpacity>
                   </View>
                 </View>
 
-                <View className="flex-row items-center gap-2">
-                  <TouchableOpacity className="bg-gray-100 p-2.5 rounded-full border border-gray-200">
-                    <SlidersHorizontal color="#4B5563" size={18} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleOpenEditModal}
-                    className="bg-[#002249] flex-row items-center px-4 py-2.5 rounded-full shadow-sm"
-                    activeOpacity={0.9}
-                  >
-                    <Edit3 color="white" size={14} className="mr-1.5" />
-                    <Label className="text-white font-bold text-xs">Edit Profile</Label>
-                  </TouchableOpacity>
+                {/* Name & Title */}
+                <View className="mb-3">
+                  <Headline className="text-2xl font-serif font-bold text-gray-900 mb-1">
+                    {currentUser?.full_name || 'Mohd Usman'}
+                  </Headline>
+
+                  <View className="flex-row flex-wrap items-center gap-2 mb-2">
+                    <Label className="text-xs font-mono text-gray-500">
+                      {currentUser?.email ? `@${currentUser.email.split('@')[0]}` : '@usman'}
+                    </Label>
+                    <View className="w-1 h-1 rounded-full bg-gray-300" />
+                    <View className="bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 flex-row items-center">
+                      <Label className="text-[10px] font-bold text-[#002249]">
+                        {currentUser?.gender ? `${currentUser.gender} • Verified Author` : 'Verified Member'}
+                      </Label>
+                    </View>
+                  </View>
+
+                  {currentUser?.mobile ? (
+                    <View className="flex-row items-center gap-1.5 mt-0.5">
+                      <Phone color="#6B7280" size={12} />
+                      <Label className="text-xs text-gray-600 font-mono">{currentUser.mobile}</Label>
+                    </View>
+                  ) : null}
+                </View>
+
+                {/* Bio / Description */}
+                {currentUser?.description ? (
+                  <View className="bg-gray-50/80 p-3.5 rounded-2xl border border-gray-100 mb-5 border-l-4 border-l-[#002249]">
+                    <Body className="text-xs text-gray-700 leading-relaxed font-serif">
+                      {currentUser.description}
+                    </Body>
+                  </View>
+                ) : null}
+
+                {/* Profile Stats Bar */}
+                <View className="bg-slate-50/90 rounded-2xl p-3 flex-row justify-around border border-slate-100">
+                  <View className="items-center flex-1 border-r border-slate-200">
+                    <Label className="text-base font-bold text-[#002249]">{userArticles.length}</Label>
+                    <Label className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Articles</Label>
+                  </View>
+                  <View className="items-center flex-1 border-r border-slate-200">
+                    <Label className="text-base font-bold text-[#002249]">
+                      {userArticles.reduce((acc, curr) => acc + (Number(curr.views) || Number(curr.views_count) || 0), 0)}
+                    </Label>
+                    <Label className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Reads</Label>
+                  </View>
+                  <View className="items-center flex-1">
+                    <Label className="text-base font-bold text-emerald-600">Active</Label>
+                    <Label className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Status</Label>
+                  </View>
                 </View>
               </View>
-
-              {/* Name & Bio */}
-              <Headline className="text-2xl font-serif text-gray-900 mb-0.5">
-                {currentUser?.full_name || 'Mohd Usman'}
-              </Headline>
-              <Label className="text-xs font-mono text-gray-500 mb-1">
-                {currentUser?.email ? `@${currentUser.email.split('@')[0]}` : '@usman'}
-              </Label>
-              <Label className="text-xs font-bold text-[#002249] mb-3">
-                {currentUser?.gender ? `${currentUser.gender} • Verified Author` : 'Verified Member'}
-              </Label>
-
-              <Body className="text-xs text-gray-600 leading-relaxed font-serif mb-6">
-                {currentUser?.description}
-              </Body>
             </View>
           </View>
 
