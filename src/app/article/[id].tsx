@@ -221,7 +221,7 @@ export default function ArticleDetails() {
             <View className="flex-row items-center justify-between border-t border-b border-gray-100 py-4 mb-6">
               <TouchableOpacity className="flex-row items-center border border-gray-200 rounded-full px-4 py-2">
                 <ThumbsUp size={16} color="#002249" className="mr-2" />
-                <Headline className="text-sm text-gray-800">Applaud Article</Headline>
+                <Headline className="text-sm text-gray-800"> Applaud Article</Headline>
               </TouchableOpacity>
               <View className="flex-row items-center gap-3">
                 <TouchableOpacity onPress={handleShare} activeOpacity={0.7} className="w-10 h-10 rounded-full bg-gray-50 items-center justify-center border border-gray-100">
@@ -235,7 +235,7 @@ export default function ArticleDetails() {
               <View className="flex-row items-center justify-between mb-4">
                 <View className="flex-row items-center">
                   <MessageCircle size={20} color="#002249" className="mr-2" />
-                  <Headline className="text-xl font-bold">Comments</Headline>
+                  <Headline className="text-xl font-bold"> Comments</Headline>
                   <View className="bg-primary/10 px-2.5 py-0.5 rounded-full ml-2">
                     <Label className="text-xs font-bold text-primary">{commentsList.length}</Label>
                   </View>
