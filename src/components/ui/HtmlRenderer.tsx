@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
   },
   paragraphText: {
     color: '#374151',
+    textAlign: 'justify',
   },
   headingContainer: {
     marginTop: 14,
@@ -328,6 +329,7 @@ const styles = StyleSheet.create({
   listItemText: {
     flex: 1,
     color: '#374151',
+    textAlign: 'justify',
   },
   imageContainer: {
     marginVertical: 12,
