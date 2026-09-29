@@ -15,8 +15,8 @@ const formatImage = (raw: any): string => {
     return 'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80';
   }
   if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
-  if (raw.startsWith('/')) return `http://192.168.1.9:5000${raw}`;
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  if (raw.startsWith('/')) return `https://elivetoday.com${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 };
 
 export default function ArticleDetails() {

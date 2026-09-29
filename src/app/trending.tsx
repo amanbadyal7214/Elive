@@ -27,9 +27,9 @@ import { Article, useHome } from '../hooks/useHome';
 function formatImageUrl(raw: any, fallback: string): string {
   if (typeof raw !== 'string' || !raw.trim()) return fallback;
   if (raw.startsWith('http://') || raw.startsWith('https://') || raw.startsWith('data:')) return raw;
-  if (raw.startsWith('/')) return `http://192.168.1.9:5000${raw}`;
-  if (raw.startsWith('uploads/')) return `http://192.168.1.9:5000/${raw}`;
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  if (raw.startsWith('/')) return `https://elivetoday.com${raw}`;
+  if (raw.startsWith('uploads/')) return `https://elivetoday.com/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 }
 
 function getArticleTitle(article: Article): string {

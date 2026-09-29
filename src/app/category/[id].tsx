@@ -42,12 +42,12 @@ function formatImageUrl(raw: any, fallback: string): string {
     return raw;
   }
   if (raw.startsWith('/')) {
-    return `http://192.168.1.9:5000${raw}`;
+    return `https://elivetoday.com${raw}`;
   }
   if (raw.startsWith('uploads/')) {
-    return `http://192.168.1.9:5000/${raw}`;
+    return `https://elivetoday.com/${raw}`;
   }
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 }
 
 function getArticleImage(article: Article): string {

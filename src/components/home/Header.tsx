@@ -2,8 +2,8 @@ import { router } from 'expo-router';
 import { Search } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
-import { Avatar } from '../ui/Avatar';
 import { getStorageItem } from '../../utils/storage';
+import { Avatar } from '../ui/Avatar';
 
 function formatAvatarUrl(raw?: string | null): string {
   if (!raw || typeof raw !== 'string' || !raw.trim()) {
@@ -18,12 +18,12 @@ function formatAvatarUrl(raw?: string | null): string {
     return raw;
   }
   if (raw.startsWith('/')) {
-    return `http://192.168.1.9:5000${raw}`;
+    return `https://elivetoday.com${raw}`;
   }
   if (raw.startsWith('uploads/')) {
-    return `http://192.168.1.9:5000/${raw}`;
+    return `https://elivetoday.com/${raw}`;
   }
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 }
 
 export function Header() {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.9:5000/api';
+export const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://elivetoday.com/api';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -50,3 +50,4 @@ axiosInstance.interceptors.response.use(
 
 export default axiosInstance;
 export { axiosInstance };
+

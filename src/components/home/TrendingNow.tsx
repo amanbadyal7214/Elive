@@ -61,9 +61,9 @@ const formatImage = (item: any): string => {
     return raw;
   }
   if (raw.startsWith('/')) {
-    return `http://192.168.1.9:5000${raw}`;
+    return `https://elivetoday.com${raw}`;
   }
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 };
 
 export function TrendingNow() {

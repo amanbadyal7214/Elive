@@ -1,6 +1,6 @@
-import React from 'react';
-import { Text, View, StyleSheet, Linking } from 'react-native';
 import { Image } from 'expo-image';
+import React from 'react';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 
 interface HtmlRendererProps {
   html: string;
@@ -143,7 +143,7 @@ export const HtmlRenderer: React.FC<HtmlRendererProps> = ({ html, baseFontSize =
         <Text
           key={index}
           style={style}
-          onPress={() => Linking.openURL(node.attrs!.href).catch(() => {})}
+          onPress={() => Linking.openURL(node.attrs!.href).catch(() => { })}
         >
           {children}
         </Text>
@@ -187,7 +187,7 @@ export const HtmlRenderer: React.FC<HtmlRendererProps> = ({ html, baseFontSize =
       if (imageUri.startsWith('//')) {
         imageUri = `https:${imageUri}`;
       } else if (imageUri.startsWith('/') && !imageUri.startsWith('http')) {
-        imageUri = `http://192.168.1.9:5000${imageUri}`;
+        imageUri = `https://elivetoday.com${imageUri}`;
       }
 
       const altText = node.attrs?.alt || node.attrs?.title || '';

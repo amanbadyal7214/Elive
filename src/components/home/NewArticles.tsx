@@ -64,7 +64,7 @@ const formatTime = (item: any): string => {
     if (!isNaN(d.getTime())) {
       return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     }
-  } catch {}
+  } catch { }
   return String(dateStr);
 };
 
@@ -77,9 +77,9 @@ const formatImage = (item: any): string => {
     return raw;
   }
   if (raw.startsWith('/')) {
-    return `http://192.168.1.9:5000${raw}`;
+    return `https://elivetoday.com${raw}`;
   }
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 };
 
 export function NewArticles() {
@@ -88,17 +88,17 @@ export function NewArticles() {
 
   const displayArticles = latestArticles.length > 0
     ? latestArticles.map((item, index) => {
-        const variants: ('blue' | 'green' | 'pink' | 'primary')[] = ['blue', 'green', 'pink', 'primary'];
-        return {
-          id: item._id || item.id || Math.random().toString(),
-          category: formatCategory(item.category),
-          title: formatTitle(item),
-          date: formatTime(item),
-          readTime: typeof item.readTime === 'string' ? item.readTime : '5m read',
-          image: formatImage(item),
-          badgeVariant: variants[index % variants.length],
-        };
-      })
+      const variants: ('blue' | 'green' | 'pink' | 'primary')[] = ['blue', 'green', 'pink', 'primary'];
+      return {
+        id: item._id || item.id || Math.random().toString(),
+        category: formatCategory(item.category),
+        title: formatTitle(item),
+        date: formatTime(item),
+        readTime: typeof item.readTime === 'string' ? item.readTime : '5m read',
+        image: formatImage(item),
+        badgeVariant: variants[index % variants.length],
+      };
+    })
     : fallbackArticles;
 
   return (
@@ -122,9 +122,9 @@ export function NewArticles() {
       ) : (
         <View className="gap-y-1">
           {displayArticles.map((item) => (
-            <TouchableOpacity 
-              key={item.id} 
-              className="flex-row bg-white rounded-2xl p-3 border border-gray-100" 
+            <TouchableOpacity
+              key={item.id}
+              className="flex-row bg-white rounded-2xl p-3 border border-gray-100"
               style={{ elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8 }}
               activeOpacity={0.7}
               onPress={() => router.push(`/article/${item.id}`)}

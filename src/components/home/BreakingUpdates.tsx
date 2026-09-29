@@ -53,7 +53,7 @@ const formatTime = (item: any): string => {
     if (!isNaN(d.getTime())) {
       return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     }
-  } catch {}
+  } catch { }
   return String(dateStr);
 };
 
@@ -66,9 +66,9 @@ const formatImage = (item: any): string => {
     return raw;
   }
   if (raw.startsWith('/')) {
-    return `http://192.168.1.9:5000${raw}`;
+    return `https://elivetoday.com${raw}`;
   }
-  return `http://192.168.1.9:5000/uploads/${raw}`;
+  return `https://elivetoday.com/uploads/${raw}`;
 };
 
 export function BreakingUpdates() {
@@ -77,13 +77,13 @@ export function BreakingUpdates() {
 
   const displayArticles = breakingArticles.length > 0
     ? breakingArticles.map((item) => ({
-        id: item._id || item.id || Math.random().toString(),
-        category: formatCategory(item.category),
-        title: formatTitle(item),
-        time: formatTime(item),
-        readTime: typeof item.readTime === 'string' ? item.readTime : '3 min read',
-        image: formatImage(item),
-      }))
+      id: item._id || item.id || Math.random().toString(),
+      category: formatCategory(item.category),
+      title: formatTitle(item),
+      time: formatTime(item),
+      readTime: typeof item.readTime === 'string' ? item.readTime : '3 min read',
+      image: formatImage(item),
+    }))
     : fallbackUpdates;
 
   return (
